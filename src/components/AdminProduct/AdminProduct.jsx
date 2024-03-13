@@ -72,6 +72,7 @@ const AdminProduct = () => {
 
     const getAllProducts = async () => {
         const res = await ProductService.getAllProduct();
+        console.log('res', res);
         return res;
     };
 
@@ -231,8 +232,6 @@ const AdminProduct = () => {
                 },
             ],
             onFilter: (value, record) => {
-                console.log('value', value);
-                console.log('record', record);
                 if (value === '>') {
                     return record.price > 50;
                 }
@@ -426,7 +425,7 @@ const AdminProduct = () => {
                     }}
                 />
             </div>
-            <ModalComponent title="Create product" open={isModalOpen} onCancel={handleCancel} footer={null}>
+            <ModalComponent forceRender title="Create product" open={isModalOpen} onCancel={handleCancel} footer={null}>
                 <Loading isLoading={isLoading}>
                     <Form
                         name="basic"
