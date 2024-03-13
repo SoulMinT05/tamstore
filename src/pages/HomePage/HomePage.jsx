@@ -79,7 +79,12 @@ const HomePage = () => {
                             textButton={isPreviousData ? 'Loading.....' : 'See more'}
                             type="outline"
                             styleButton={{
-                                border: '1px solid rgb(11, 116, 229)',
+                                // border: '1px solid rgb(11, 116, 229)',
+                                border: `${
+                                    products?.total === products?.data?.length
+                                        ? '1px solid rgb(204, 204, 204)'
+                                        : '1px solid rgb(11, 116, 229)'
+                                }   `,
                                 color: `${
                                     products?.total === products?.data?.length ? '#ccc' : 'rgb(11, 116, 229)'
                                 }   `,
@@ -92,6 +97,7 @@ const HomePage = () => {
                             styleTextButton={{
                                 fontWeight: 500,
                                 color: products?.total === products?.data?.length && '#fff',
+                                border: products?.total === products?.data?.length && '1px solid rgb(204, 204, 204)',
                             }}
                             onClick={() => setLimit((prev) => prev + 6)}
                         />
