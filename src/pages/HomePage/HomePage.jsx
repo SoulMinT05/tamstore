@@ -17,47 +17,32 @@ const HomePage = () => {
     // const searchDebounce = useDebounce(searchProduct.toLowerCase(), 1000); // Chuyển đổi thành chữ thường
     const searchDebounce = useDebounce(searchProduct, 1000);
     console.log('searchProduct', searchProduct);
-    const refSearch = useRef(false);
     const [loading, setLoading] = useState(false);
-    const [stateProducts, setStateProducts] = useState([]);
     const [limit, setLimit] = useState(6);
+    // const [page, setLimit] = useState(6);
 
     const arr = ['T-Shirt', 'Shirt', 'Jacket', 'Camisole', 'Dress'];
     const fetchProductAll = async (context) => {
         // if(search.length > 0) {}
         console.log('context', context);
-        const search = '';
         const limit = context?.queryKey && context?.queryKey[1];
+        const search = context?.queryKey && context?.queryKey[2];
         const res = await ProductService.getAllProduct(search, limit);
         console.log('search', search);
-        if (search.length > 0 || refSearch.current) {
-            setStateProducts(res?.data);
-            return [];
-        } else {
-            console.log('res', res);
-            return res;
-        }
+
+        return res;
     };
 
-    useEffect(() => {
-        if (refSearch.current) {
-            setLoading(true);
-            fetchProductAll(searchDebounce);
-        }
-        refSearch.current = true;
-        setLoading(false);
-    }, [searchDebounce]);
-
-    const { isLoading, data: products } = useQuery(['products', limit], fetchProductAll, {
+    const {
+        isLoading,
+        data: products,
+        isPreviousData,
+    } = useQuery(['products', limit, searchDebounce], fetchProductAll, {
         retry: 3,
         retryDelay: 1000,
+        keepPreviousData: true,
     });
-
-    useEffect(() => {
-        if (products?.data?.length > 0) {
-            setStateProducts(products?.data);
-        }
-    }, [products]);
+    console.log('isPreviousData', products);
 
     return (
         <Loading isLoading={isLoading || loading}>
@@ -69,10 +54,10 @@ const HomePage = () => {
                 </WrapperTypeProduct>
             </div>
             <div className="body" style={{ width: '100%', backgroundColor: '#efefef' }}>
-                <div id="container" style={{ height: '1000px', width: '1270px', margin: '0 auto' }}>
+                <div id="container" style={{ minHeight: '1000px', width: '1270px', margin: '0 auto' }}>
                     <SliderComponent arrImages={[slider1, slider2, slider3]} />
                     <WrapperProducts>
-                        {stateProducts?.map((product) => {
+                        {products?.data?.map((product) => {
                             return (
                                 <CardComponent
                                     key={product._id}
@@ -91,16 +76,24 @@ const HomePage = () => {
                     </WrapperProducts>
                     <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                         <WrapperButtonMore
-                            textButton="Xem thêm"
+                            textButton={isPreviousData ? 'Loading.....' : 'See more'}
                             type="outline"
                             styleButton={{
                                 border: '1px solid rgb(11, 116, 229)',
-                                color: 'rgb(11, 116, 229)',
+                                color: `${
+                                    products?.total === products?.data?.length ? '#ccc' : 'rgb(11, 116, 229)'
+                                }   `,
                                 width: '240px',
                                 height: '38px',
                                 borderRadius: '4px',
+                                marginTop: '16px',
                             }}
-                            styleTextButton={{ fontWeight: 500 }}
+                            disabled={products?.total === products?.data?.length || products?.totalPage === 1}
+                            styleTextButton={{
+                                fontWeight: 500,
+                                color: products?.total === products?.data?.length && '#fff',
+                            }}
+                            onClick={() => setLimit((prev) => prev + 6)}
                         />
                     </div>
                 </div>
