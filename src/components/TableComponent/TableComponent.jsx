@@ -1,72 +1,44 @@
 import { Dropdown, Space, Table } from 'antd';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Loading from '../../components/LoadingComponent/Loading';
+import { Excel } from 'antd-table-saveas-excel';
 
 const TableComponent = (props) => {
-    const { selectionType = 'checkbox', data = [], isLoading = false, columns = [], handleDeleteMany } = props;
+    const {
+        selectionType = 'checkbox',
+        data: dataSource = [],
+        isLoading = false,
+        columns = [],
+        handleDeleteMany,
+    } = props;
     const [rowSelectedKeys, setRowSelectedKeys] = useState([]);
-    // rowSelection object indicates the need for row selection
+    const newColumnExport = useMemo(() => {
+        const array = columns?.filter((col) => col.dataIndex !== 'action');
+        return array;
+    }, [columns]);
+    console.log('newColumnExport', newColumnExport);
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
             setRowSelectedKeys(selectedRowKeys);
         },
-        // getCheckboxProps: (record) => ({
-        //     disabled: record.name === 'Disabled User',
-        //     // Column configuration not to be checked
-        //     name: record.name,
-        // }),
     };
-    console.log('data', data);
-    const items = [
-        {
-            key: '1',
-            label: (
-                <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-                    1st menu item
-                </a>
-            ),
-        },
-        {
-            key: '2',
-            label: (
-                <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-                    2nd menu item (disabled)
-                </a>
-            ),
-            disabled: true,
-        },
-        {
-            key: '3',
-            label: (
-                <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
-                    3rd menu item (disabled)
-                </a>
-            ),
-            disabled: true,
-        },
-        {
-            key: '4',
-            danger: true,
-            label: 'a danger item',
-        },
-    ];
-
+    
     const handleDeleteAll = () => {
         handleDeleteMany(rowSelectedKeys);
+    };
+    const exportExcel = () => {
+        const excel = new Excel();
+        excel
+            .addSheet('test')
+            .addColumns(newColumnExport)
+            .addDataSource(dataSource, {
+                str2Percent: true,
+            })
+            .saveAs('Excel.xlsx');
     };
 
     return (
         <Loading isLoading={isLoading}>
-            {/* <div>
-                <Dropdown menu={{ items }}>
-                    <a onClick={(e) => e.preventDefault()}>
-                        <Space>
-                            Hover me
-                            <DownOutlined />
-                        </Space>
-                    </a>
-                </Dropdown>
-            </div> */}
             {rowSelectedKeys.length > 0 && (
                 <div
                     style={{
@@ -81,13 +53,14 @@ const TableComponent = (props) => {
                     Xóa tất cả
                 </div>
             )}
+            <button onClick={exportExcel}>Export Excel</button>
             <Table
                 rowSelection={{
                     type: selectionType,
                     ...rowSelection,
                 }}
                 columns={columns}
-                dataSource={data}
+                dataSource={dataSource}
                 {...props}
             />
         </Loading>
