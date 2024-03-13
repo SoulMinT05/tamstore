@@ -41,6 +41,22 @@ const AdminUser = () => {
         const res = UserService.updateUser(id, { ...rests }, token);
         return res;
     });
+    const mutationDeletedMany = useMutationHooks((data) => {
+        const { token, ...ids } = data;
+        const res = UserService.deleteManyUser(ids, token);
+        return res;
+    });
+
+    const handleDeleteManyUsers = (ids) => {
+        mutationDeletedMany.mutate(
+            { ids: ids, token: user?.access_token },
+            {
+                onSettled: () => {
+                    queryUser.refetch();
+                },
+            },
+        );
+    };
 
     const mutationDeleted = useMutationHooks((data) => {
         const { id, token } = data;
@@ -71,12 +87,13 @@ const AdminUser = () => {
         form.setFieldsValue(stateUserDetails);
     }, [form, stateUserDetails]);
 
+    console.log('rowSelected',rowSelected);
     useEffect(() => {
-        if (rowSelected) {
+        if (rowSelected && isOpenDrawer) {
             setIsLoadingUpdate(true);
             fetchGetDetailsUser(rowSelected);
         }
-    }, [rowSelected]);
+    }, [rowSelected, isOpenDrawer]);
 
     const handleDetailsProduct = () => {
         setIsOpenDrawer(true);
@@ -94,6 +111,12 @@ const AdminUser = () => {
         isSuccess: isSuccessDeleted,
         isError: isErrorDeleted,
     } = mutationDeleted;
+    const {
+        data: dataDeletedMany,
+        isLoading: isLoadingDeletedMany,
+        isSuccess: isSuccessDeletedMany,
+        isError: isErrorDeletedMany,
+    } = mutationDeletedMany;
 
     const queryUser = useQuery({ queryKey: ['users'], queryFn: getAllUsers });
     const { isLoading: isLoadingUsers, data: users } = queryUser;
@@ -229,15 +252,6 @@ const AdminUser = () => {
             return { ...user, key: user._id, isAdmin: user.isAdmin ? 'True' : 'False' };
         });
 
-    // useEffect(() => {
-    //     if (isSuccess && data?.status === 'OK') {
-    //         message.success();
-    //         handleCancel();
-    //     } else if (isError) {
-    //         message.error();
-    //     }
-    // }, [isSuccess]);
-
     useEffect(() => {
         if (isSuccessDeleted && dataDeleted?.status === 'OK') {
             message.success();
@@ -247,6 +261,13 @@ const AdminUser = () => {
         }
     }, [isSuccessDeleted]);
 
+    useEffect(() => {
+        if (isSuccessDeletedMany && dataDeletedMany?.status === 'OK') {
+            message.success();
+        } else if (isErrorDeletedMany) {
+            message.error();
+        }
+    }, [isSuccessDeletedMany]);
     const handleCloseDrawer = () => {
         setIsOpenDrawer(false);
         setStateUserDetails({
@@ -326,6 +347,7 @@ const AdminUser = () => {
             <WrapperHeader>Quản lý người dùng</WrapperHeader>
             <div style={{ marginTop: '20px' }}>
                 <TableComponent
+                    handleDeleteMany={handleDeleteManyUsers}
                     columns={columns}
                     isLoading={isLoadingUsers}
                     data={dataTable}
@@ -338,69 +360,6 @@ const AdminUser = () => {
                     }}
                 />
             </div>
-            {/* <ModalComponent title="Create user" forceRender open={isModalOpen} onCancel={handleCancel} footer={null}>
-                <Loading isLoading={isLoading}>
-                    <Form
-                        name="basic"
-                        labelCol={{ span: 6 }}
-                        wrapperCol={{ span: 18 }}
-                        onFinish={onFinish}
-                        autoComplete="on"
-                        form={form}
-                    >
-                        <Form.Item
-                            label="Name"
-                            name="name"
-                            rules={[{ required: true, message: 'Please input your name!' }]}
-                        >
-                            <InputComponent value={stateUser['name']} onChange={handleOnchange} name="name" />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Email"
-                            name="email"
-                            rules={[{ required: true, message: 'Please input your email!' }]}
-                        >
-                            <InputComponent value={stateUser.email} onChange={handleOnchange} name="email" />
-                        </Form.Item>
-                        <Form.Item
-                            label="Phone"
-                            name="phone"
-                            rules={[{ required: true, message: 'Please input your count inStock!' }]}
-                        >
-                            <InputComponent value={stateUser.phone} onChange={handleOnchange} name="phone" />
-                        </Form.Item>
-
-                        {/* <Form.Item
-                            label="Image"
-                            name="image"
-                            rules={[{ required: true, message: 'Please input your count image!' }]}
-                        >
-                            <WrapperUploadFile onChange={handleOnchangeAvatar} maxCount={1}>
-                                <Button>Select File</Button>
-                                {stateUser?.image && (
-                                    <img
-                                        src={stateUser?.image}
-                                        style={{
-                                            height: '60px',
-                                            width: '60px',
-                                            borderRadius: '50%',
-                                            objectFit: 'cover',
-                                            marginLeft: '10px',
-                                        }}
-                                        alt="avatar"
-                                    />
-                                )}
-                            </WrapperUploadFile>
-                        </Form.Item> */}
-            {/* <Form.Item wrapperCol={{ offset: 20, span: 16 }}>
-                            <Button type="primary" htmlType="submit">
-                                Submit
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </Loading>
-            </ModalComponent> */}
             <DrawerComponent
                 title="Detail user"
                 isOpen={isOpenDrawer}

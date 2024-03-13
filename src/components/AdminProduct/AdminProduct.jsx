@@ -70,6 +70,12 @@ const AdminProduct = () => {
         return res;
     });
 
+    const mutationDeletedMany = useMutationHooks((data) => {
+        const { token, ...ids } = data;
+        const res = ProductService.deleteManyProduct(ids, token);
+        return res;
+    });
+
     const getAllProducts = async () => {
         const res = await ProductService.getAllProduct();
         console.log('res', res);
@@ -97,14 +103,24 @@ const AdminProduct = () => {
     }, [form, stateProductDetails]);
 
     useEffect(() => {
-        if (rowSelected) {
+        if (rowSelected && isOpenDrawer) {
             setIsLoadingUpdate(true);
             fetchGetDetailsProduct(rowSelected);
         }
-    }, [rowSelected]);
+    }, [rowSelected, isOpenDrawer]);
 
     const handleDetailsProduct = () => {
         setIsOpenDrawer(true);
+    };
+    const handleDeleteManyProducts = (ids) => {
+        mutationDeletedMany.mutate(
+            { ids: ids, token: user?.access_token },
+            {
+                onSettled: () => {
+                    queryProduct.refetch();
+                },
+            },
+        );
     };
 
     const { data, isLoading, isSuccess, isError } = mutation;
@@ -120,7 +136,12 @@ const AdminProduct = () => {
         isSuccess: isSuccessDeleted,
         isError: isErrorDeleted,
     } = mutationDeleted;
-
+    const {
+        data: dataDeletedMany,
+        isLoading: isLoadingDeletedMany,
+        isSuccess: isSuccessDeletedMany,
+        isError: isErrorDeletedMany,
+    } = mutationDeletedMany;
     const queryProduct = useQuery({ queryKey: ['products'], queryFn: getAllProducts });
     const { isLoading: isLoadingProducts, data: products } = queryProduct;
     const renderAction = () => {
@@ -285,6 +306,14 @@ const AdminProduct = () => {
     }, [isSuccess]);
 
     useEffect(() => {
+        if (isSuccessDeletedMany && dataDeletedMany?.status === 'OK') {
+            message.success();
+        } else if (isErrorDeletedMany) {
+            message.error();
+        }
+    }, [isSuccessDeletedMany]);
+
+    useEffect(() => {
         if (isSuccessDeleted && dataDeleted?.status === 'OK') {
             message.success();
             handleCancelDelete();
@@ -413,6 +442,7 @@ const AdminProduct = () => {
             </div>
             <div style={{ marginTop: '20px' }}>
                 <TableComponent
+                    handleDeleteMany={handleDeleteManyProducts}
                     columns={columns}
                     isLoading={isLoadingProducts}
                     data={dataTable}
