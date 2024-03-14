@@ -1,11 +1,11 @@
 export const isJsonString = (data) => {
     try {
-        JSON.parse(data)
+        JSON.parse(data);
     } catch (error) {
-        return false
+        return false;
     }
-    return true
-}
+    return true;
+};
 
 export const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -24,3 +24,19 @@ export function getItem(label, key, icon, children, type) {
         type,
     };
 }
+export const renderOptions = (arr) => {
+    let results = [];
+    if (arr) {
+        results = arr?.map((opt) => {
+            return {
+                value: opt,
+                label: opt,
+            };
+        });
+    }
+    results.push({
+        label: 'Add type',
+        value: 'add_type',
+    });
+    return results;
+};
