@@ -9,7 +9,7 @@ import {
 } from './style';
 import { UserOutlined, CaretDownOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import ButttonInputSearch from '../ButtonInputSearch/ButttonInputSearch';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as UserService from '../../services/UserService';
 import { resetUser } from '../../redux/slides/userSlide';
@@ -62,8 +62,8 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     return (
         <div style={{ width: '100%', background: 'rgb(26, 148, 255)', display: 'flex', justifyContent: 'center' }}>
             <WrapperHeader style={{ justifyContent: isHiddenSearch && isHiddenSearch ? 'space-between' : 'unset' }}>
-                <Col span={5}>
-                    <WrapperTextHeader>LAPTRINHTHATDE</WrapperTextHeader>
+                <Col span={5} styled={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+                    <WrapperTextHeader>TAMSTORE</WrapperTextHeader>
                 </Col>
                 {!isHiddenSearch && (
                     <Col span={13}>
@@ -113,7 +113,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                         </WrapperHeaderAccout>
                     </Loading>
                     {!isHiddenCart && (
-                        <div>
+                        <div onClick={() => navigate('/order')} style-={{ cursor: 'pointer' }}>
                             <Badge count={4} size="small">
                                 <ShoppingCartOutlined style={{ fontSize: '30px', color: '#fff' }} />
                             </Badge>
