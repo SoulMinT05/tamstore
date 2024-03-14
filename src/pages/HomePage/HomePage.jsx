@@ -19,11 +19,10 @@ const HomePage = () => {
     console.log('searchProduct', searchProduct);
     const [loading, setLoading] = useState(false);
     const [limit, setLimit] = useState(6);
-    // const [page, setLimit] = useState(6);
+    const [typeProducts, setTypeProducts] = useState([]);
 
-    const arr = ['T-Shirt', 'Shirt', 'Jacket', 'Camisole', 'Dress'];
+    // const arr = ['T-Shirt', 'Shirt', 'Jacket', 'Camisole', 'Ao Dai', 'Dress'];
     const fetchProductAll = async (context) => {
-        // if(search.length > 0) {}
         console.log('context', context);
         const limit = context?.queryKey && context?.queryKey[1];
         const search = context?.queryKey && context?.queryKey[2];
@@ -31,6 +30,13 @@ const HomePage = () => {
         console.log('search', search);
 
         return res;
+    };
+
+    const fetchAllTypeProduct = async () => {
+        const res = await ProductService.getAllTypeProduct();
+        if (res?.status === 'OK') {
+            setTypeProducts(res?.data);
+        }
     };
 
     const {
@@ -42,13 +48,16 @@ const HomePage = () => {
         retryDelay: 1000,
         keepPreviousData: true,
     });
-    console.log('isPreviousData', products);
+
+    useEffect(() => {
+        fetchAllTypeProduct();
+    }, []);
 
     return (
         <Loading isLoading={isLoading || loading}>
             <div style={{ width: '1270px', margin: '0 auto' }}>
                 <WrapperTypeProduct>
-                    {arr.map((item) => {
+                    {typeProducts.map((item) => {
                         return <TypeProduct name={item} key={item} />;
                     })}
                 </WrapperTypeProduct>
@@ -70,6 +79,7 @@ const HomePage = () => {
                                     type={product.type}
                                     selled={product.selled}
                                     discount={product.discount}
+                                    id={product._id}
                                 />
                             );
                         })}

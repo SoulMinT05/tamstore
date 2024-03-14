@@ -9,9 +9,15 @@ import {
 } from './style';
 import { StarFilled } from '@ant-design/icons';
 import logo from '../../assets/images/logo.png';
+import { useNavigate } from 'react-router';
 
 const CardComponent = (props) => {
-    const { countInStock, description, image, name, price, rating, type, discount, selled } = props;
+    const { countInStock, description, image, name, price, rating, type, discount, selled, id } = props;
+    const navigate = useNavigate();
+    const handleDetailsProduct = (id) => {
+        navigate(`/product-details/${id}`);
+    };
+
     return (
         <WrapperCardStyle
             hoverable
@@ -19,6 +25,7 @@ const CardComponent = (props) => {
             style={{ width: 200 }}
             bodyStyle={{ padding: '10px' }}
             cover={<img alt="example" src={image} />}
+            onClick={() => handleDetailsProduct(id)}
         >
             <img
                 src={logo}
