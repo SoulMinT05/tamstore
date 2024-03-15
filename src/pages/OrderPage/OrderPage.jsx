@@ -115,6 +115,7 @@ const OrderPage = () => {
                                                 ></Checkbox>
                                                 <img
                                                     src={order?.image}
+                                                    alt=""
                                                     style={{ width: '77px', height: '79px', objectFit: 'cover' }}
                                                 />
                                                 <div
@@ -138,7 +139,7 @@ const OrderPage = () => {
                                             >
                                                 <span>
                                                     <span style={{ fontSize: '13px', color: '#242424' }}>
-                                                        {order?.price}
+                                                        {order?.price}$
                                                     </span>
                                                 </span>
                                                 <WrapperCountOrder>
@@ -175,7 +176,7 @@ const OrderPage = () => {
                                                         fontWeight: 500,
                                                     }}
                                                 >
-                                                    {order?.price * order?.amount}
+                                                    {order?.price * order?.amount}$
                                                 </span>
                                                 <DeleteOutlined
                                                     style={{ cursor: 'pointer' }}

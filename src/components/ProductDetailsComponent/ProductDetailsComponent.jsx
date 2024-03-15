@@ -19,12 +19,16 @@ import ButtonComponent from '../ButtonComponent/ButtonComponent';
 import * as ProductService from '../../services/ProductService';
 import { useQuery } from '@tanstack/react-query';
 import Loading from '../LoadingComponent/Loading';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router';
+import { addOrderProduct } from '../../redux/slides/orderSlide';
 
 const ProductDetailsComponent = ({ idProduct }) => {
     const [numProduct, setNumProduct] = useState(1);
     const user = useSelector((state) => state.user);
-    console.log('user', user);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const dispatch = useDispatch();
     const onChange = (value) => {
         setNumProduct(Number(value));
     };
@@ -54,6 +58,23 @@ const ProductDetailsComponent = ({ idProduct }) => {
     const { isLoading, data: productDetails } = useQuery(['product-details', idProduct], fetchGetDetailsProduct, {
         enabled: !!idProduct,
     });
+    const handleAddOrderProduct = () => {
+        if (!user?.id) {
+            navigate('/sign-in', { state: location?.pathname });
+        } else {
+            dispatch(
+                addOrderProduct({
+                    orderItem: {
+                        name: productDetails?.name,
+                        amount: numProduct,
+                        image: productDetails?.image,
+                        price: productDetails?.price,
+                        product: productDetails?._id,
+                    },
+                }),
+            );
+        }
+    };
     console.log('product-details', productDetails);
 
     return (
@@ -98,7 +119,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                     </WrapperPriceProduct>
                     <WrapperAddressProduct>
                         <span>Giao đến </span>
-                        <span className="address">{user?.address || '127 Nguyen Van Cu, Can Tho' }</span> -
+                        <span className="address">{user?.address || '127 Nguyen Van Cu, Can Tho'}</span> -
                         <span className="change-address">Đổi địa chỉ</span>
                     </WrapperAddressProduct>
                     <div
@@ -136,6 +157,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                                 border: 'none',
                                 borderRadius: '4px',
                             }}
+                            onClick={handleAddOrderProduct}
                             textButton={'Chọn mua'}
                             styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>

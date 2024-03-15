@@ -15,7 +15,7 @@ import { useDebounce } from '../../hooks/useDebounce';
 const HomePage = () => {
     const searchProduct = useSelector((state) => state.product?.search);
     // const searchDebounce = useDebounce(searchProduct.toLowerCase(), 1000); // Chuyển đổi thành chữ thường
-    const searchDebounce = useDebounce(searchProduct, 1000);
+    const searchDebounce = useDebounce(searchProduct, 500);
     console.log('searchProduct', searchProduct);
     const [loading, setLoading] = useState(false);
     const [limit, setLimit] = useState(6);
