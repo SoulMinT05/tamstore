@@ -34,6 +34,7 @@ const AdminProduct = () => {
         type: '',
         countInStock: '',
         newType: '',
+        discount: '',
     });
     const [stateProductDetails, setStateProductDetails] = useState({
         name: '',
@@ -43,12 +44,13 @@ const AdminProduct = () => {
         image: '',
         type: '',
         countInStock: '',
+        discount: '',
     });
 
     const [form] = Form.useForm();
 
     const mutation = useMutationHooks((data) => {
-        const { name, price, description, rating, image, type, countInStock } = data;
+        const { name, price, description, rating, image, type, countInStock, discount } = data;
         const res = ProductService.createProduct({
             name,
             price,
@@ -57,6 +59,7 @@ const AdminProduct = () => {
             image,
             type,
             countInStock,
+            discount,
         });
         return res;
     });
@@ -79,7 +82,8 @@ const AdminProduct = () => {
     });
 
     const getAllProducts = async () => {
-        const res = await ProductService.getAllProduct();
+        //Set search and limit of product render
+        const res = await ProductService.getAllProduct('', 100);
         console.log('res', res);
         return res;
     };
@@ -95,6 +99,7 @@ const AdminProduct = () => {
                 image: res?.data?.image,
                 type: res?.data?.type,
                 countInStock: res?.data?.countInStock,
+                discount: res?.data?.discount,
             });
         }
         setIsLoadingUpdate(false);
@@ -380,6 +385,7 @@ const AdminProduct = () => {
             image: '',
             type: '',
             countInStock: '',
+            discount: '',
         });
         form.resetFields();
     };
@@ -393,6 +399,7 @@ const AdminProduct = () => {
             image: stateProduct.image,
             type: stateProduct.type === 'add_type' ? stateProduct.newType : stateProduct.type,
             countInStock: stateProduct.countInStock,
+            discount: stateProduct.discount,
         };
         mutation.mutate(params, {
             onSettled: () => {
@@ -558,6 +565,13 @@ const AdminProduct = () => {
                             <InputComponent value={stateProduct.rating} onChange={handleOnchange} name="rating" />
                         </Form.Item>
                         <Form.Item
+                            label="Discount"
+                            name="discount"
+                            rules={[{ required: true, message: 'Please input your count discount!' }]}
+                        >
+                            <InputComponent value={stateProduct.discount} onChange={handleOnchange} name="discount" />
+                        </Form.Item>
+                        <Form.Item
                             label="Image"
                             name="image"
                             rules={[{ required: true, message: 'Please input your count image!' }]}
@@ -661,12 +675,23 @@ const AdminProduct = () => {
                         <Form.Item
                             label="Rating"
                             name="rating"
-                            rules={[{ required: true, message: 'Please input your count rating!' }]}
+                            rules={[{ required: true, message: 'Please input your rating!' }]}
                         >
                             <InputComponent
                                 value={stateProductDetails.rating}
                                 onChange={handleOnchangeDetails}
                                 name="rating"
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            label="Discount"
+                            name="discount"
+                            rules={[{ required: true, message: 'Please input your discount!' }]}
+                        >
+                            <InputComponent
+                                value={stateProductDetails.discount}
+                                onChange={handleOnchangeDetails}
+                                name="discount"
                             />
                         </Form.Item>
                         <Form.Item

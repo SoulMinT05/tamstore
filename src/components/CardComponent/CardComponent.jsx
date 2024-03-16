@@ -10,6 +10,7 @@ import {
 import { StarFilled } from '@ant-design/icons';
 import logo from '../../assets/images/logo.png';
 import { useNavigate } from 'react-router';
+import { convertPrice } from '../../utils';
 
 const CardComponent = (props) => {
     const { countInStock, description, image, name, price, rating, type, discount, selled, id } = props;
@@ -48,7 +49,7 @@ const CardComponent = (props) => {
                 <WrapperStyleTextSell> | Sold {selled || 100}+</WrapperStyleTextSell>
             </WrapperReportText>
             <WrapperPriceText>
-                <span style={{ marginRight: '8px' }}>{price?.toLocaleString()}$</span>
+                <span style={{ marginRight: '8px' }}>{convertPrice(price)}</span>
                 <WrapperDiscountText>-{discount || 5} %</WrapperDiscountText>
             </WrapperPriceText>
         </WrapperCardStyle>
