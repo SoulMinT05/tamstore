@@ -34,28 +34,105 @@ import InputComponent from '../../components/InputComponent/InputComponent';
 import Loading from '../../components/LoadingComponent/Loading';
 import StepComponent from '../../components/StepComponent/StepComponent';
 import { useQuery } from '@tanstack/react-query';
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useMutationHooks } from '../../hooks/useMutationHook';
 
 const MyOrderPage = () => {
-    const user = useSelector((state) => state.user);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { state } = location;
     const fetchMyOrder = async () => {
-        const res = await OrderService.getOrderByUserId(user?.id, user?.access_token);
+        const res = await OrderService.getOrderByUserId(state?.id, state?.token);
         return res.data;
     };
     const queryOrder = useQuery(
-        { queryKey: ['users'], queryFn: fetchMyOrder },
+        { queryKey: ['orders'], queryFn: fetchMyOrder },
         {
-            enabled: user?.id && user?.access_token,
+            enabled: state?.id && state?.token,
         },
     );
     const { isLoading, data } = queryOrder;
     console.log('data', data);
+
+    const handleDetailsOrder = (id) => {
+        navigate(`/details-order/${id}`, {
+            state: {
+                token: state?.token,
+            },
+        });
+    };
+    const mutation = useMutationHooks((data) => {
+        const { id, token } = data;
+        const res = OrderService.cancelOrder(id, token);
+        return res;
+    });
+
+    const handleCancelOrder = (id) => {
+        mutation.mutate(
+            { id, token: state?.token },
+            {
+                onSuccess: () => {
+                    queryOrder.refetch();
+                },
+            },
+        );
+    };
+    const {
+        isLoading: isLoadingCancel,
+        isSuccess: isSuccessCancel,
+        isError: isErrorCancel,
+        data: dataCancel,
+    } = mutation;
+    useEffect(() => {
+        if (isSuccessCancel && dataCancel?.status === 'OK') {
+            message.success();
+        } else if (isErrorCancel) {
+            message.error();
+        }
+    }, [isErrorCancel, isSuccessCancel]);
+
+    const renderProduct = (data) => {
+        return data?.map((order) => {
+            return (
+                <WrapperHeaderItem>
+                    <img
+                        src={order?.image}
+                        alt=""
+                        style={{
+                            width: '70px',
+                            height: '70px',
+                            objectFit: 'cover',
+                            border: '1px solid rgb(238, 238, 238)',
+                            padding: '2px',
+                        }}
+                    />
+                    <div
+                        style={{
+                            width: 260,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            marginLeft: '10px',
+                        }}
+                    >
+                        {order?.name}
+                    </div>
+                    <span style={{ fontSize: '13px', color: '#242424', marginLeft: 'auto' }}>
+                        {convertPrice(order?.price)}
+                    </span>
+                </WrapperHeaderItem>
+            );
+        });
+    };
+
     return (
-        <Loading isLoading={isLoading}>
+        <Loading isLoading={isLoading || isLoadingCancel}>
             <WrapperContainer>
                 <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
                     <h4>Đơn hàng của tôi</h4>
                     <WrapperListOrder>
-                        {data?.orderItems?.map((order) => {
+                        {data?.map((order) => {
+                            console.log('orderrrrr', order);
                             return (
                                 <WrapperItemOrder key={order?._id}>
                                     <WrapperStatus>
@@ -69,45 +146,19 @@ const MyOrderPage = () => {
                                             {`${order.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'}`}
                                         </div>
                                     </WrapperStatus>
-                                    <WrapperHeaderItem>
-                                        <img
-                                            src={order?.image}
-                                            alt=""
-                                            style={{
-                                                width: '70px',
-                                                height: '70px',
-                                                objectFit: 'cover',
-                                                border: '1px solid rgb(238, 238, 238)',
-                                                padding: '2px',
-                                            }}
-                                        />
-                                        <div
-                                            style={{
-                                                width: 260,
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap',
-                                                marginLeft: '10px',
-                                            }}
-                                        >
-                                            {order?.name}
-                                        </div>
-                                        <span style={{ fontSize: '13px', color: '#242424', marginLeft: 'auto' }}>
-                                            {convertPrice(order?.price)}
-                                        </span>
-                                    </WrapperHeaderItem>
+                                    {renderProduct(order?.orderItems)}
                                     <WrapperFooterItem>
                                         <div>
                                             <span style={{ color: 'rgb(255, 66, 78)' }}>Tổng tiền: </span>
                                             <span
                                                 style={{ fontSize: '13px', color: 'rgb(56, 56, 61)', fontWeight: 700 }}
                                             >
-                                                {convertPrice(data?.totalPrice)}
+                                                {convertPrice(order?.totalPrice)}
                                             </span>
                                         </div>
                                         <div style={{ display: 'flex', gap: '10px' }}>
                                             <ButtonComponent
-                                                // onClick={() => handleAddCard()}
+                                                onClick={() => handleCancelOrder(order?._id)}
                                                 size={40}
                                                 styleButton={{
                                                     height: '36px',
@@ -118,7 +169,7 @@ const MyOrderPage = () => {
                                                 styleTextButton={{ color: 'rgb(11, 116, 229)', fontSize: '14px' }}
                                             ></ButtonComponent>
                                             <ButtonComponent
-                                                // onClick={() => handleAddCard()}
+                                                onClick={() => handleDetailsOrder(order?._id)}
                                                 size={40}
                                                 styleButton={{
                                                     height: '36px',

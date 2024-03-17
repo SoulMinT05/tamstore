@@ -66,7 +66,12 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
         } else if (type === 'admin') {
             navigate('/system/admin');
         } else if (type === 'my-order') {
-            navigate('/my-order');
+            navigate('/my-order', {
+                state: {
+                    id: user?.id,
+                    token: user?.access_token,
+                },
+            });
         } else {
             handleLogout();
         }
