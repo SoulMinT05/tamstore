@@ -81,7 +81,7 @@ const TypeProductPage = () => {
                                                 price={product.price}
                                                 rating={product.rating}
                                                 type={product.type}
-                                                selled={product.selled}
+                                                sold={product.sold}
                                                 discount={product.discount}
                                                 id={product._id}
                                             />

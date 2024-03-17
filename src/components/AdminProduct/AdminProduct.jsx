@@ -108,6 +108,7 @@ const AdminProduct = () => {
     useEffect(() => {
         form.setFieldsValue(stateProductDetails);
     }, [form, stateProductDetails]);
+    console.log('state', stateProductDetails, stateProduct);
 
     useEffect(() => {
         if (rowSelected && isOpenDrawer) {
