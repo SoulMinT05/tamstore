@@ -9,22 +9,19 @@ import * as UserService from '../../services/UserService';
 import * as OrderService from '../../services/OrderService';
 import * as message from '../../components/Message/Message';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    decreaseAmount,
-    increaseAmount,
-    removeAllOrderProduct,
-    removeOrderProduct,
-    selectedOrder,
-} from '../../redux/slides/orderSlide';
+import { removeAllOrderProduct } from '../../redux/slides/orderSlide';
 import { convertPrice } from '../../utils';
 import ModalComponent from '../../components/ModalComponent/ModalComponent';
 import InputComponent from '../../components/InputComponent/InputComponent';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import Loading from '../../components/LoadingComponent/Loading';
 import { updateUser } from '../../redux/slides/userSlide';
+import { useNavigate } from 'react-router-dom';
 
 const PaymentPage = () => {
+    const navigate = useNavigate();
     const order = useSelector((state) => state.order);
+    console.log('orderPayment', order);
     const user = useSelector((state) => state.user);
 
     const [delivery, setDelivery] = useState('fast');
@@ -147,7 +144,20 @@ const PaymentPage = () => {
 
     useEffect(() => {
         if (isSuccess && dataAdd?.status === 'OK') {
+            const arrayOrdered = [];
+            order?.orderItemsSelected?.forEach((element) => {
+                arrayOrdered.push(element.product);
+            });
+            dispatch(removeAllOrderProduct({ listChecked: arrayOrdered }));
             message.success('Order successfully!');
+            navigate('/orderSuccess', {
+                state: {
+                    delivery,
+                    payment,
+                    orders: order?.orderItemsSelected,
+                    totalPriceMemo: totalPriceMemo,
+                },
+            });
         } else if (isError) {
             message.error();
         }

@@ -8,6 +8,7 @@ import {
     WrapperListOrder,
     WrapperRight,
     WrapperStyleHeader,
+    WrapperStyleHeaderDelivery,
     WrapperTotal,
 } from './style';
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
@@ -30,6 +31,7 @@ import { useMutationHooks } from '../../hooks/useMutationHook';
 import Loading from '../../components/LoadingComponent/Loading';
 import { updateUser } from '../../redux/slides/userSlide';
 import { useNavigate } from 'react-router-dom';
+import StepComponent from '../../components/StepComponent/StepComponent';
 
 const OrderPage = () => {
     const navigate = useNavigate();
@@ -120,19 +122,21 @@ const OrderPage = () => {
         return 0;
     }, [order]);
 
-    const deliverPriceMemo = useMemo(() => {
-        if (priceMemo > 100) {
-            return 0;
-        } else if (priceMemo === 0) {
+    const deliveryPriceMemo = useMemo(() => {
+        if (priceMemo >= 50 && priceMemo < 120) {
+            return 2;
+        } else if (priceMemo >= 120 || order?.orderItemsSelected?.length === 0 || priceMemo === 0) {
             return 0;
         } else {
             return 5;
         }
     }, [priceMemo]);
+    console.log('order?.orderItemsSelected?.length', order?.orderItemsSelected?.length);
+    console.log('deliveryPriceMemo', deliveryPriceMemo);
 
     const totalPriceMemo = useMemo(() => {
-        return Number(priceMemo) - Number(priceDiscountMemo) + Number(deliverPriceMemo);
-    }, [priceMemo, priceDiscountMemo, deliverPriceMemo]);
+        return Number(priceMemo) - Number(priceDiscountMemo) + Number(deliveryPriceMemo);
+    }, [priceMemo, priceDiscountMemo, deliveryPriceMemo]);
 
     const handleRemoveAllOrder = () => {
         console.log('listChecked', listChecked);
@@ -193,7 +197,20 @@ const OrderPage = () => {
         });
     };
     console.log('StateUserDetails', stateUserDetails);
-
+    const itemsDelivery = [
+        {
+            title: '5$',
+            description: 'Under 50$',
+        },
+        {
+            title: '2$',
+            description: 'From 50$ to under 120$',
+        },
+        {
+            title: '0$',
+            description: 'Over 120$',
+        },
+    ];
     return (
         <>
             <div style={{ background: '#f5f5fa', with: '100%', height: '100vh' }}>
@@ -201,6 +218,20 @@ const OrderPage = () => {
                     <h3>Giỏ hàng</h3>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <WrapperLeft>
+                            <WrapperStyleHeaderDelivery>
+                                <StepComponent
+                                    items={itemsDelivery}
+                                    current={
+                                        deliveryPriceMemo === 2
+                                            ? 1
+                                            : deliveryPriceMemo === 5
+                                            ? 0
+                                            : order.orderItemsSelected.length === 0
+                                            ? 0
+                                            : 2
+                                    }
+                                />
+                            </WrapperStyleHeaderDelivery>
                             <WrapperStyleHeader>
                                 <span style={{ display: 'inline-block', width: '390px' }}>
                                     <Checkbox
@@ -374,7 +405,7 @@ const OrderPage = () => {
                                     >
                                         <span>Phí giao hàng</span>
                                         <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>
-                                            {convertPrice(deliverPriceMemo)}
+                                            {convertPrice(deliveryPriceMemo)}
                                         </span>
                                     </div>
                                 </WrapperInfo>
