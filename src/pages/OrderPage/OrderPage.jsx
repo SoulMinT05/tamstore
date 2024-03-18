@@ -32,6 +32,7 @@ import Loading from '../../components/LoadingComponent/Loading';
 import { updateUser } from '../../redux/slides/userSlide';
 import { useNavigate } from 'react-router-dom';
 import StepComponent from '../../components/StepComponent/StepComponent';
+import { current } from '@reduxjs/toolkit';
 
 const OrderPage = () => {
     const navigate = useNavigate();
@@ -58,11 +59,15 @@ const OrderPage = () => {
         }
     };
 
-    const handleChangeCount = (type, idProduct) => {
+    const handleChangeCount = (type, idProduct, limited) => {
         if (type === 'increase') {
-            dispatch(increaseAmount({ idProduct }));
+            if (!limited) {
+                dispatch(increaseAmount({ idProduct }));
+            }
         } else {
-            dispatch(decreaseAmount({ idProduct }));
+            if (!limited) {
+                dispatch(decreaseAmount({ idProduct }));
+            }
         }
     };
 
@@ -114,7 +119,8 @@ const OrderPage = () => {
 
     const priceDiscountMemo = useMemo(() => {
         const result = order?.orderItemsSelected?.reduce((total, cur) => {
-            return total + cur?.discount * cur?.amount;
+            const totalDiscount = cur.discount ? cur.discount : 0;
+            return total + Number((priceMemo * totalDiscount * cur.amount) / 100);
         }, 0);
         if (Number(result)) {
             return result;
@@ -308,7 +314,13 @@ const OrderPage = () => {
                                                             background: 'transparent',
                                                             cursor: 'pointer',
                                                         }}
-                                                        onClick={() => handleChangeCount('decrease', order?.product)}
+                                                        onClick={() =>
+                                                            handleChangeCount(
+                                                                'decrease',
+                                                                order?.product,
+                                                                order?.amount === 1,
+                                                            )
+                                                        }
                                                     >
                                                         <MinusOutlined style={{ color: '#000', fontSize: '10px' }} />
                                                     </button>
@@ -316,6 +328,8 @@ const OrderPage = () => {
                                                         defaultValue={order?.amount}
                                                         value={order?.amount}
                                                         size="small"
+                                                        min={1}
+                                                        max={order?.countInStock}
                                                     />
                                                     <button
                                                         style={{
@@ -323,7 +337,13 @@ const OrderPage = () => {
                                                             background: 'transparent',
                                                             cursor: 'pointer',
                                                         }}
-                                                        onClick={() => handleChangeCount('increase', order?.product)}
+                                                        onClick={() =>
+                                                            handleChangeCount(
+                                                                'increase',
+                                                                order?.product,
+                                                                order?.amount === order?.countInStock,
+                                                            )
+                                                        }
                                                     >
                                                         <PlusOutlined style={{ color: '#000', fontSize: '10px' }} />
                                                     </button>
@@ -383,19 +403,10 @@ const OrderPage = () => {
                                     >
                                         <span>Giảm giá</span>
                                         <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>
-                                            {priceDiscountMemo}%
+                                            {convertPrice(priceDiscountMemo)}
                                         </span>
                                     </div>
-                                    {/* <div
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                        }}
-                                    >
-                                        <span>Thuế</span>
-                                        <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>0</span>
-                                    </div> */}
+
                                     <div
                                         style={{
                                             display: 'flex',

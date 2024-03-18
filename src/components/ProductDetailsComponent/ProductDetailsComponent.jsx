@@ -63,6 +63,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
         if (!user?.id) {
             navigate('/sign-in', { state: location?.pathname });
         } else {
+            console.log('productDetails', productDetails);
             dispatch(
                 addOrderProduct({
                     orderItem: {
@@ -71,6 +72,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
                         image: productDetails?.image,
                         price: productDetails?.price,
                         product: productDetails?._id,
+                        discount: productDetails?.discount,
+                        countInStock: productDetails?.countInStock,
                     },
                 }),
             );
