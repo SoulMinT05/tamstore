@@ -22,12 +22,11 @@ import { useMemo } from 'react';
 import Loading from '../../components/LoadingComponent/Loading';
 
 const DetailsOrderPage = () => {
+    console.log('orderConstant', orderConstant);
     const params = useParams();
     const location = useLocation();
     const { state } = location;
     const { id } = params;
-
-    console.log('pamramsss', params);
 
     const fetchDetailsOrder = async () => {
         const res = await OrderService.getDetailsOrder(id, state?.token);
@@ -41,6 +40,7 @@ const DetailsOrderPage = () => {
         },
     );
     const { isLoading, data } = queryOrder;
+    console.log('dataCheck', data);
 
     const priceMemo = useMemo(() => {
         const result = data?.orderItems?.reduce((total, cur) => {
@@ -84,7 +84,7 @@ const DetailsOrderPage = () => {
                         <WrapperInfoUser>
                             <WrapperLabel>Hình thức thanh toán</WrapperLabel>
                             <WrapperContentInfo>
-                                <div className="payment-info">{orderConstant[data?.paymentMethod]}</div>
+                                <div className="payment-info">{orderConstant.payment[data?.paymentMethod]}</div>
                                 <div className="status-payment">
                                     {data?.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'}
                                 </div>
@@ -102,6 +102,7 @@ const DetailsOrderPage = () => {
                         </div>
                         {data?.orderItems?.map((order) => {
                             console.log('order', order);
+                            console.log('dataaaaaaa', data);
                             return (
                                 <WrapperProduct>
                                     <WrapperNameProduct>
