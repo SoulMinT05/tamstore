@@ -1,5 +1,5 @@
 import { Col, Image, Rate, Row } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import imageProduct from '../../assets/images/test.webp';
 import imageProductSmall from '../../assets/images/imagesmall.webp';
 import {
@@ -21,12 +21,15 @@ import { useQuery } from '@tanstack/react-query';
 import Loading from '../LoadingComponent/Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
-import { addOrderProduct } from '../../redux/slides/orderSlide';
+import { addOrderProduct, resetOrder } from '../../redux/slides/orderSlide';
 import { convertPrice } from '../../utils';
+import * as message from '../../components/Message/Message';
 
 const ProductDetailsComponent = ({ idProduct }) => {
     const [numProduct, setNumProduct] = useState(1);
     const user = useSelector((state) => state.user);
+    const order = useSelector((state) => state.order);
+    const [errorLimitOrder, setErrorLimitOrder] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
@@ -40,22 +43,36 @@ const ProductDetailsComponent = ({ idProduct }) => {
             return res.data;
         }
     };
-    const handleChangeCount = (type) => {
-        if (type === 'increase') {
-            setNumProduct(numProduct + 1);
+
+    useEffect(() => {
+        const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id);
+        if (orderRedux?.amount + numProduct <= orderRedux?.countInStock || !orderRedux) {
+            setErrorLimitOrder(false);
         } else {
-            setNumProduct(numProduct - 1);
+            setErrorLimitOrder(true);
+        }
+    }, [numProduct]);
+
+    useEffect(() => {
+        if (order.isSuccessOrder) {
+            message.success('Added to cart');
+        }
+        return () => {
+            dispatch(resetOrder());
+        };
+    }, [order.isSuccessOrder]);
+
+    const handleChangeCount = (type, limited) => {
+        if (type === 'increase') {
+            if (!limited) {
+                setNumProduct(numProduct + 1);
+            }
+        } else {
+            if (!limited) {
+                setNumProduct(numProduct - 1);
+            }
         }
     };
-
-    const renderStar = (num) => {
-        const stars = [];
-        for (let i = 0; i < num; i++) {
-            stars.push(<StarFilled style={{ fontSize: '14px', color: 'rgb(253, 216, 54)' }} key={i} />);
-        }
-        return stars;
-    };
-
     const { isLoading, data: productDetails } = useQuery(['product-details', idProduct], fetchGetDetailsProduct, {
         enabled: !!idProduct,
     });
@@ -63,20 +80,24 @@ const ProductDetailsComponent = ({ idProduct }) => {
         if (!user?.id) {
             navigate('/sign-in', { state: location?.pathname });
         } else {
-            console.log('productDetails', productDetails);
-            dispatch(
-                addOrderProduct({
-                    orderItem: {
-                        name: productDetails?.name,
-                        amount: numProduct,
-                        image: productDetails?.image,
-                        price: productDetails?.price,
-                        product: productDetails?._id,
-                        discount: productDetails?.discount,
-                        countInStock: productDetails?.countInStock,
-                    },
-                }),
-            );
+            const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id);
+            if (orderRedux?.amount + numProduct <= orderRedux?.countInStock || !orderRedux) {
+                dispatch(
+                    addOrderProduct({
+                        orderItem: {
+                            name: productDetails?.name,
+                            amount: numProduct,
+                            image: productDetails?.image,
+                            price: productDetails?.price,
+                            product: productDetails?._id,
+                            discount: productDetails?.discount,
+                            countInStock: productDetails?.countInStock,
+                        },
+                    }),
+                );
+            } else {
+                setErrorLimitOrder(true);
+            }
         }
     };
     console.log('product-details', productDetails);
@@ -138,33 +159,45 @@ const ProductDetailsComponent = ({ idProduct }) => {
                         <WrapperQualityProduct>
                             <button
                                 style={{ border: 'none', background: 'transparent' }}
-                                onClick={() => handleChangeCount('decrease')}
+                                onClick={() => handleChangeCount('decrease', numProduct === 1)}
                             >
                                 <MinusOutlined style={{ color: '#000', fontSize: '20px', cursor: 'pointer' }} />
                             </button>
-                            <WrapperInputNumber onChange={onChange} defaultValue={1} value={numProduct} size="small" />
+                            <WrapperInputNumber
+                                onChange={onChange}
+                                defaultValue={1}
+                                min={1}
+                                max={productDetails?.countInStock}
+                                value={numProduct}
+                                size="small"
+                            />
                             <button
                                 style={{ border: 'none', background: 'transparent' }}
-                                onClick={() => handleChangeCount('increase')}
+                                onClick={() =>
+                                    handleChangeCount('increase', numProduct === productDetails?.countInStock)
+                                }
                             >
                                 <PlusOutlined style={{ color: '#000', fontSize: '20px', cursor: 'pointer' }} />
                             </button>
                         </WrapperQualityProduct>
                     </div>
                     <div style={{ display: 'flex', aliggItems: 'center', gap: '12px' }}>
-                        <ButtonComponent
-                            size={40}
-                            styleButton={{
-                                background: 'rgb(255, 57, 69)',
-                                height: '48px',
-                                width: '220px',
-                                border: 'none',
-                                borderRadius: '4px',
-                            }}
-                            onClick={handleAddOrderProduct}
-                            textButton={'Chọn mua'}
-                            styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
-                        ></ButtonComponent>
+                        <div>
+                            <ButtonComponent
+                                size={40}
+                                styleButton={{
+                                    background: 'rgb(255, 57, 69)',
+                                    height: '48px',
+                                    width: '220px',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                }}
+                                onClick={handleAddOrderProduct}
+                                textButton={'Chọn mua'}
+                                styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                            ></ButtonComponent>
+                            {errorLimitOrder && <div style={{ color: 'red' }}>Product sold out</div>}
+                        </div>
                         <ButtonComponent
                             size={40}
                             styleButton={{
