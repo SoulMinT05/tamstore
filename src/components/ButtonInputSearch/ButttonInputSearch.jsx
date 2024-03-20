@@ -8,7 +8,7 @@ const ButttonInputSearch = (props) => {
     const {
         size,
         placeholder,
-        textButton,
+        textbutton,
         bordered,
         backgroundColorInput = '#fff',
         backgroundColorButton = 'rgb(13, 92, 182)',
@@ -28,8 +28,8 @@ const ButttonInputSearch = (props) => {
                 size={size}
                 styleButton={{ background: backgroundColorButton, border: !bordered && 'none' }}
                 icon={<SearchOutlined color={colorButton} style={{ color: '#fff' }} />}
-                textButton={textButton}
-                styleTextButton={{ color: colorButton }}
+                textbutton={textbutton}
+                styletextbutton={{ color: colorButton }}
             />
         </div>
     );

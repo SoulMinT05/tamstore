@@ -27,7 +27,6 @@ const SignInPage = () => {
     const { data, isLoading, isSuccess } = mutation;
 
     useEffect(() => {
-        console.log('location', location);
         if (isSuccess) {
             if (location?.state) {
                 navigate(location?.state);
@@ -49,7 +48,6 @@ const SignInPage = () => {
         dispatch(updateUser({ ...res?.data, access_token: token }));
     };
 
-    console.log('mutation', mutation);
 
     const handleNavigateSignUp = () => {
         navigate('/sign-up');
@@ -123,8 +121,8 @@ const SignInPage = () => {
                                 borderRadius: '4px',
                                 margin: '26px 0 10px',
                             }}
-                            textButton={'Đăng nhập'}
-                            styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                            textbutton={'Đăng nhập'}
+                            styletextbutton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                         ></ButtonComponent>
                     </Loading>
                     <p>

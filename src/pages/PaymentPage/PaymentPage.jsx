@@ -23,7 +23,6 @@ import { PayPalButton } from 'react-paypal-button-v2';
 const PaymentPage = () => {
     const navigate = useNavigate();
     const order = useSelector((state) => state.order);
-    console.log('orderPayment', order);
     const user = useSelector((state) => state.user);
 
     const [delivery, setDelivery] = useState('fast');
@@ -119,7 +118,6 @@ const PaymentPage = () => {
             });
         }
     };
-    console.log('order', order, user);
 
     const handleCancelUpdate = () => {
         setStateUserDetails({
@@ -133,7 +131,6 @@ const PaymentPage = () => {
     };
 
     const onSuccessPaypal = (details, data) => {
-        console.log('details, data', details, data);
         mutationAddOrder.mutate({
             token: user?.access_token,
             orderItems: order?.orderItemsSelected,
@@ -148,6 +145,7 @@ const PaymentPage = () => {
             user: user?.id,
             isPaid: true,
             paidAt: details.update_time,
+            email: user?.email,
         });
     };
 
@@ -188,7 +186,6 @@ const PaymentPage = () => {
     }, [isSuccess, isError]);
 
     const handleUpdateInfoUser = () => {
-        console.log('stateUserDetails', stateUserDetails);
         const { name, address, city, phone } = stateUserDetails;
         if (name && address && city && phone) {
             mutationUpdate.mutate(
@@ -228,7 +225,6 @@ const PaymentPage = () => {
             setSkdReady(true);
         };
         document.body.appendChild(script);
-        console.log('data', data);
     };
 
     useEffect(() => {
@@ -349,7 +345,7 @@ const PaymentPage = () => {
                                     <div style={{ width: '320px' }}>
                                         <PayPalButton
                                             // amount="0.01"
-                                            amount={totalPriceMemo / 3}
+                                            amount={Math.round(totalPriceMemo / 3)}
                                             // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
                                             onSuccess={onSuccessPaypal}
                                             onError={() => {
@@ -368,8 +364,8 @@ const PaymentPage = () => {
                                             border: 'none',
                                             borderRadius: '4px',
                                         }}
-                                        textButton={'Order'}
-                                        styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                                        textbutton={'Order'}
+                                        styletextbutton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                                     ></ButtonComponent>
                                 )}
                             </WrapperRight>

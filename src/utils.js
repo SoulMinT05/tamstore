@@ -65,7 +65,6 @@ export const initFacebookSDK = () => {
     };
     // Load the SDK asynchronously
     (function (d, s, id) {
-        console.log(s);
         var js,
             fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;

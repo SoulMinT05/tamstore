@@ -76,7 +76,6 @@ const AdminProduct = () => {
     const getAllProducts = async () => {
         //Set search and limit of product render
         const res = await ProductService.getAllProduct('', 100);
-        console.log('res', res);
         return res;
     };
 
@@ -104,7 +103,6 @@ const AdminProduct = () => {
             form.setFieldsValue(initial());
         }
     }, [form, stateProductDetails, isModalOpen]);
-    console.log('state', stateProductDetails, stateProduct);
 
     useEffect(() => {
         if (rowSelected && isOpenDrawer) {
@@ -169,7 +167,6 @@ const AdminProduct = () => {
             </div>
         );
     };
-    console.log('typeProduct', typeProduct);
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();

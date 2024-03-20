@@ -1,5 +1,5 @@
 import { Col, Image, Rate, Row } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import imageProduct from '../../assets/images/test.webp';
 import imageProductSmall from '../../assets/images/imagesmall.webp';
 import {
@@ -25,7 +25,7 @@ import { addOrderProduct, resetOrder } from '../../redux/slides/orderSlide';
 import { convertPrice, initFacebookSDK } from '../../utils';
 import * as message from '../../components/Message/Message';
 import LikeButtonComponent from '../LikeButtonComponent/LikeButtonComponent';
-import CommentComponent from '../LikeButtonComponent/CommentComponent/CommentComponent';
+import CommentComponent from '../CommentComponent/div>         </div>     ); }  export default CommentComponent;/function CommentComponent(props) {     const { dataHref, width } = props;     return (         <div style={{ margin: \'-10px -12px 0\' }}>             <div className="fb-comments" data-href={dataHref} data-width={width} data-numposts="5"></div>         </CommentComponent';
 
 const ProductDetailsComponent = ({ idProduct }) => {
     const [numProduct, setNumProduct] = useState(1);
@@ -38,6 +38,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
     const onChange = (value) => {
         setNumProduct(Number(value));
     };
+
     const fetchGetDetailsProduct = async (context) => {
         const id = context?.queryKey && context?.queryKey[1];
         if (id) {
@@ -57,7 +58,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
             (!orderRedux && productDetails?.countInStock > 0)
         ) {
             setErrorLimitOrder(false);
-        } else {
+        } else if (productDetails?.countInStock === 0) {
             setErrorLimitOrder(true);
         }
     }, [numProduct]);
@@ -112,7 +113,6 @@ const ProductDetailsComponent = ({ idProduct }) => {
             }
         }
     };
-    console.log('product-details', productDetails);
 
     return (
         <Loading isLoading={isLoading}>
@@ -159,7 +159,13 @@ const ProductDetailsComponent = ({ idProduct }) => {
                         <span className="address">{user?.address || '127 Nguyen Van Cu, Can Tho'}</span> -
                         <span className="change-address">Đổi địa chỉ</span>
                     </WrapperAddressProduct>
-                    <LikeButtonComponent dataHref={'https://developers.facebook.com/docs/plugins/'} />
+                    <LikeButtonComponent
+                        dataHref={
+                            process.env.REACT_APP_IS_LOCAL
+                                ? 'https://developers.facebook.com/docs/plugins/'
+                                : window.location.href
+                        }
+                    />
                     <div
                         style={{
                             margin: '10px 0 20px',
@@ -206,8 +212,8 @@ const ProductDetailsComponent = ({ idProduct }) => {
                                     borderRadius: '4px',
                                 }}
                                 onClick={handleAddOrderProduct}
-                                textButton={'Chọn mua'}
-                                styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                                textbutton={'Chọn mua'}
+                                styletextbutton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                             ></ButtonComponent>
                             {errorLimitOrder && <div style={{ color: 'red' }}>Product sold out</div>}
                         </div>
@@ -220,13 +226,17 @@ const ProductDetailsComponent = ({ idProduct }) => {
                                 border: '1px solid rgb(13, 92, 182)',
                                 borderRadius: '4px',
                             }}
-                            textButton={'Mua trả sau'}
-                            styleTextButton={{ color: 'rgb(13, 92, 182)', fontSize: '15px' }}
+                            textbutton={'Mua trả sau'}
+                            styletextbutton={{ color: 'rgb(13, 92, 182)', fontSize: '15px' }}
                         ></ButtonComponent>
                     </div>
                 </Col>
                 <CommentComponent
-                    dataHref={'https://developers.facebook.com/docs/plugins/comments#configurator'}
+                    dataHref={
+                        process.env.REACT_APP_IS_LOCAL
+                            ? 'https://developers.facebook.com/docs/plugins/comments#configurator'
+                            : window.location.href
+                    }
                     width="1270"
                 />
             </Row>

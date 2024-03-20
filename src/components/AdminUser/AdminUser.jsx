@@ -63,7 +63,6 @@ const AdminUser = () => {
 
     const getAllUsers = async () => {
         const res = await UserService.getAllUser(user?.access_token);
-        console.log('res', res);
         return res;
     };
 
@@ -86,7 +85,6 @@ const AdminUser = () => {
         form.setFieldsValue(stateUserDetails);
     }, [form, stateUserDetails]);
 
-    console.log('rowSelected', rowSelected);
     useEffect(() => {
         if (rowSelected && isOpenDrawer) {
             setIsLoadingUpdate(true);

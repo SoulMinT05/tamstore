@@ -22,7 +22,6 @@ import { useMemo } from 'react';
 import Loading from '../../components/LoadingComponent/Loading';
 
 const DetailsOrderPage = () => {
-    console.log('orderConstant', orderConstant);
     const params = useParams();
     const location = useLocation();
     const { state } = location;
@@ -40,7 +39,6 @@ const DetailsOrderPage = () => {
         },
     );
     const { isLoading, data } = queryOrder;
-    console.log('dataCheck', data);
 
     const priceMemo = useMemo(() => {
         const result = data?.orderItems?.reduce((total, cur) => {
@@ -101,8 +99,6 @@ const DetailsOrderPage = () => {
                             <WrapperItemLabel>Giảm giá</WrapperItemLabel>
                         </div>
                         {data?.orderItems?.map((order) => {
-                            console.log('order', order);
-                            console.log('dataaaaaaa', data);
                             return (
                                 <WrapperProduct>
                                     <WrapperNameProduct>

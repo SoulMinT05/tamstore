@@ -24,7 +24,6 @@ export const orderSlide = createSlice({
     initialState,
     reducers: {
         addOrderProduct: (state, action) => {
-            console.log({ state, action });
             const { orderItem } = action.payload;
             const itemOrder = state?.orderItems?.find((item) => item?.product === orderItem.product);
             if (itemOrder) {

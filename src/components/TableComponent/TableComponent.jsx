@@ -16,7 +16,6 @@ const TableComponent = (props) => {
         const array = columns?.filter((col) => col.dataIndex !== 'action');
         return array;
     }, [columns]);
-    console.log('newColumnExport', newColumnExport);
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
             setRowSelectedKeys(selectedRowKeys);

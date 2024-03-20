@@ -52,7 +52,6 @@ const MyOrderPage = () => {
         },
     );
     const { isLoading, data } = queryOrder;
-    console.log('data', data);
 
     const handleDetailsOrder = (id) => {
         navigate(`/details-order/${id}`, {
@@ -94,7 +93,7 @@ const MyOrderPage = () => {
     const renderProduct = (data) => {
         return data?.map((order) => {
             return (
-                <WrapperHeaderItem>
+                <WrapperHeaderItem key={order?._id}>
                     <img
                         src={order?.image}
                         alt=""
@@ -164,8 +163,8 @@ const MyOrderPage = () => {
                                                     border: '1px solid rgb(11, 116, 229)',
                                                     borderRadius: '4px',
                                                 }}
-                                                textButton={'Hủy đơn hàng'}
-                                                styleTextButton={{ color: 'rgb(11, 116, 229)', fontSize: '14px' }}
+                                                textbutton={'Hủy đơn hàng'}
+                                                styletextbutton={{ color: 'rgb(11, 116, 229)', fontSize: '14px' }}
                                             ></ButtonComponent>
                                             <ButtonComponent
                                                 onClick={() => handleDetailsOrder(order?._id)}
@@ -175,8 +174,8 @@ const MyOrderPage = () => {
                                                     border: '1px solid rgb(11, 116, 229)',
                                                     borderRadius: '4px',
                                                 }}
-                                                textButton={'Xem chi tiết'}
-                                                styleTextButton={{ color: 'rgb(11, 116, 229)', fontSize: '14px' }}
+                                                textbutton={'Xem chi tiết'}
+                                                styletextbutton={{ color: 'rgb(11, 116, 229)', fontSize: '14px' }}
                                             ></ButtonComponent>
                                         </div>
                                     </WrapperFooterItem>

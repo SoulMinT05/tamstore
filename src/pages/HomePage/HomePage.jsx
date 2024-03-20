@@ -16,18 +16,15 @@ const HomePage = () => {
     const searchProduct = useSelector((state) => state.product?.search);
     // const searchDebounce = useDebounce(searchProduct.toLowerCase(), 1000); // Chuyển đổi thành chữ thường
     const searchDebounce = useDebounce(searchProduct, 200);
-    console.log('searchProduct', searchProduct);
     const [loading, setLoading] = useState(false);
     const [limit, setLimit] = useState(6);
     const [typeProducts, setTypeProducts] = useState([]);
 
     // const arr = ['T-Shirt', 'Shirt', 'Jacket', 'Camisole', 'Ao Dai', 'Dress'];
     const fetchProductAll = async (context) => {
-        console.log('context', context);
         const limit = context?.queryKey && context?.queryKey[1];
         const search = context?.queryKey && context?.queryKey[2];
         const res = await ProductService.getAllProduct(search, limit);
-        console.log('search', search);
 
         return res;
     };
@@ -86,7 +83,7 @@ const HomePage = () => {
                     </WrapperProducts>
                     <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                         <WrapperButtonMore
-                            textButton={isPreviousData ? 'Loading.....' : 'See more'}
+                            textbutton={isPreviousData ? 'Loading.....' : 'See more'}
                             type="outline"
                             styleButton={{
                                 // border: '1px solid rgb(11, 116, 229)',
@@ -104,7 +101,7 @@ const HomePage = () => {
                                 marginTop: '16px',
                             }}
                             disabled={products?.total === products?.data?.length || products?.totalPage === 1}
-                            styleTextButton={{
+                            styletextbutton={{
                                 fontWeight: 500,
                                 color: products?.total === products?.data?.length && '#fff',
                                 border: products?.total === products?.data?.length && '1px solid rgb(204, 204, 204)',

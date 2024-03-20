@@ -26,7 +26,6 @@ const TypeProductPage = () => {
         setLoading(true);
         const res = await ProductService.getProductType(type, page, limit);
         if (res?.status === 'OK') {
-            console.log('res', res);
             setLoading(false);
             setProducts(res?.data);
             setPaginate({
@@ -36,10 +35,8 @@ const TypeProductPage = () => {
         } else {
             setLoading(false);
         }
-        console.log('res', res);
     };
 
-    console.log('searchProduct', searchProduct);
     useEffect(() => {
         if (state) {
             fetchProductType(state, paginate.page, paginate.limit);

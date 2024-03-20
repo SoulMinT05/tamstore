@@ -137,15 +137,12 @@ const OrderPage = () => {
             return 5;
         }
     }, [priceMemo]);
-    console.log('order?.orderItemsSelected?.length', order?.orderItemsSelected?.length);
-    console.log('deliveryPriceMemo', deliveryPriceMemo);
 
     const totalPriceMemo = useMemo(() => {
         return Number(priceMemo) - Number(priceDiscountMemo) + Number(deliveryPriceMemo);
     }, [priceMemo, priceDiscountMemo, deliveryPriceMemo]);
 
     const handleRemoveAllOrder = () => {
-        console.log('listChecked', listChecked);
         if (listChecked?.length >= 1) {
             dispatch(removeAllOrderProduct({ listChecked }));
         }
@@ -177,10 +174,8 @@ const OrderPage = () => {
     });
 
     const { isLoading, data } = mutationUpdate;
-    console.log('data', data);
 
     const handleUpdateInfoUser = () => {
-        console.log('stateUserDetails', stateUserDetails);
         const { name, address, city, phone } = stateUserDetails;
         if (name && address && city && phone) {
             mutationUpdate.mutate(
@@ -202,7 +197,6 @@ const OrderPage = () => {
             [e.target.name]: e.target.value,
         });
     };
-    console.log('StateUserDetails', stateUserDetails);
     const itemsDelivery = [
         {
             title: '5$',
@@ -264,7 +258,7 @@ const OrderPage = () => {
                                 {order?.orderItems?.map((order) => {
                                     const priceProduct = convertPrice(order?.price * order?.amo);
                                     return (
-                                        <WrapperItemOrder>
+                                        <WrapperItemOrder key={order?.product}>
                                             <div
                                                 style={{
                                                     width: '390px',
@@ -443,8 +437,8 @@ const OrderPage = () => {
                                     border: 'none',
                                     borderRadius: '4px',
                                 }}
-                                textButton={'Mua hàng'}
-                                styleTextButton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
+                                textbutton={'Mua hàng'}
+                                styletextbutton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                             ></ButtonComponent>
                         </WrapperRight>
                     </div>
