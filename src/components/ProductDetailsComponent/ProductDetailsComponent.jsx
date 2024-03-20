@@ -22,8 +22,10 @@ import Loading from '../LoadingComponent/Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
 import { addOrderProduct, resetOrder } from '../../redux/slides/orderSlide';
-import { convertPrice } from '../../utils';
+import { convertPrice, initFacebookSDK } from '../../utils';
 import * as message from '../../components/Message/Message';
+import LikeButtonComponent from '../LikeButtonComponent/LikeButtonComponent';
+import CommentComponent from '../LikeButtonComponent/CommentComponent/CommentComponent';
 
 const ProductDetailsComponent = ({ idProduct }) => {
     const [numProduct, setNumProduct] = useState(1);
@@ -45,8 +47,15 @@ const ProductDetailsComponent = ({ idProduct }) => {
     };
 
     useEffect(() => {
+        initFacebookSDK();
+    }, []);
+
+    useEffect(() => {
         const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id);
-        if (orderRedux?.amount + numProduct <= orderRedux?.countInStock || !orderRedux) {
+        if (
+            orderRedux?.amount + numProduct <= orderRedux?.countInStock ||
+            (!orderRedux && productDetails?.countInStock > 0)
+        ) {
             setErrorLimitOrder(false);
         } else {
             setErrorLimitOrder(true);
@@ -81,7 +90,10 @@ const ProductDetailsComponent = ({ idProduct }) => {
             navigate('/sign-in', { state: location?.pathname });
         } else {
             const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id);
-            if (orderRedux?.amount + numProduct <= orderRedux?.countInStock || !orderRedux) {
+            if (
+                orderRedux?.amount + numProduct <= orderRedux?.countInStock ||
+                (!orderRedux && productDetails?.countInStock > 0)
+            ) {
                 dispatch(
                     addOrderProduct({
                         orderItem: {
@@ -147,6 +159,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                         <span className="address">{user?.address || '127 Nguyen Van Cu, Can Tho'}</span> -
                         <span className="change-address">Đổi địa chỉ</span>
                     </WrapperAddressProduct>
+                    <LikeButtonComponent dataHref={'https://developers.facebook.com/docs/plugins/'} />
                     <div
                         style={{
                             margin: '10px 0 20px',
@@ -212,6 +225,10 @@ const ProductDetailsComponent = ({ idProduct }) => {
                         ></ButtonComponent>
                     </div>
                 </Col>
+                <CommentComponent
+                    dataHref={'https://developers.facebook.com/docs/plugins/comments#configurator'}
+                    width="1270"
+                />
             </Row>
         </Loading>
     );
