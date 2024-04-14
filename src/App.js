@@ -24,9 +24,10 @@ function App() {
     }, []);
 
     const handleDecoded = () => {
-        let storageData = localStorage.getItem('access_token');
+        // let storageData = localStorage.getItem('access_token');1
+        let storageData = user?.access_token || localStorage.getItem('access_token');
         let decoded = {};
-        if (storageData && isJsonString(storageData)) {
+        if (storageData && isJsonString(storageData) && !user?.access_token) {
             storageData = JSON.parse(storageData);
             decoded = jwt_decode(storageData);
         }
