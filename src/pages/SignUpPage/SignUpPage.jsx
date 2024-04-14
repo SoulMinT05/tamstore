@@ -31,7 +31,7 @@ const SignUpPage = () => {
     const { data, isLoading, isSuccess, isError } = mutation;
 
     useEffect(() => {
-        if (isSuccess) {
+        if (isSuccess && data?.status !== 'ERR') {
             message.success();
             handleNavigateSignIn();
         } else if (isError) {
@@ -71,7 +71,7 @@ const SignUpPage = () => {
                     <p>Đăng nhập vào tạo tài khoản</p>
                     <InputForm
                         style={{ marginBottom: '10px' }}
-                        placeholder="abc@gmail.com"
+                        placeholder="Email"
                         value={email}
                         onChange={handleOnchangeEmail}
                     />
@@ -88,7 +88,7 @@ const SignUpPage = () => {
                             {isShowPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
                         </span>
                         <InputForm
-                            placeholder="password"
+                            placeholder="Mật khẩu"
                             style={{ marginBottom: '10px' }}
                             type={isShowPassword ? 'text' : 'password'}
                             value={password}
@@ -108,7 +108,7 @@ const SignUpPage = () => {
                             {isShowConfirmPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
                         </span>
                         <InputForm
-                            placeholder="comfirm password"
+                            placeholder="Xác nhận mật khẩu"
                             type={isShowConfirmPassword ? 'text' : 'password'}
                             value={confirmPassword}
                             onChange={handleOnchangeConfirmPassword}
@@ -139,7 +139,7 @@ const SignUpPage = () => {
                 </WrapperContainerLeft>
                 <WrapperContainerRight>
                     <Image src={imageLogo} preview={false} alt="iamge-logo" height="203px" width="203px" />
-                    <h4>Mua sắm tại LTTD</h4>
+                    <h4>Mua sắm tại TAMSTORE</h4>
                 </WrapperContainerRight>
             </div>
         </div>

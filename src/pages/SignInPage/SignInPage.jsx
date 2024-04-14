@@ -27,7 +27,7 @@ const SignInPage = () => {
     const { data, isLoading, isSuccess } = mutation;
 
     useEffect(() => {
-        if (isSuccess) {
+        if (isSuccess && data?.status !== 'ERR') {
             if (location?.state) {
                 navigate(location?.state);
             } else {
@@ -47,7 +47,6 @@ const SignInPage = () => {
         const res = await UserService.getDetailsUser(id, token);
         dispatch(updateUser({ ...res?.data, access_token: token }));
     };
-
 
     const handleNavigateSignUp = () => {
         navigate('/sign-up');
@@ -84,7 +83,7 @@ const SignInPage = () => {
                     <p>Đăng nhập vào tạo tài khoản</p>
                     <InputForm
                         style={{ marginBottom: '10px' }}
-                        placeholder="abc@gmail.com"
+                        placeholder="Email"
                         value={email}
                         onChange={handleOnchangeEmail}
                     />
@@ -101,7 +100,7 @@ const SignInPage = () => {
                             {isShowPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
                         </span>
                         <InputForm
-                            placeholder="password"
+                            placeholder="Mật khẩu"
                             type={isShowPassword ? 'text' : 'password'}
                             value={password}
                             onChange={handleOnchangePassword}
@@ -135,7 +134,7 @@ const SignInPage = () => {
                 </WrapperContainerLeft>
                 <WrapperContainerRight>
                     <Image src={imageLogo} preview={false} alt="iamge-logo" height="203px" width="203px" />
-                    <h4>Mua sắm tại LTTD</h4>
+                    <h4>Mua sắm tại TAMSTORE</h4>
                 </WrapperContainerRight>
             </div>
         </div>

@@ -366,13 +366,13 @@ const OrderPage = () => {
                             <div style={{ width: '100%' }}>
                                 <WrapperInfo>
                                     <div>
-                                        <span>Address: </span>
+                                        <span>Địa chỉ: </span>
                                         <span style={{ fontWeight: 'bold' }}>{`${user?.address}, ${user?.city}`}</span>
                                         <span
                                             onClick={handleChangeAddress}
                                             style={{ color: 'blue', cursor: 'pointer' }}
                                         >
-                                            Change
+                                            . Thay đổi
                                         </span>
                                     </div>
                                 </WrapperInfo>

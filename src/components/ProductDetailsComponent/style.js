@@ -2,8 +2,10 @@ import { Col, Image, InputNumber } from 'antd';
 import styled from 'styled-components';
 
 export const WrapperStyleImageSmall = styled(Image)`
-    height: 64px;
-    width: 64px;
+    height: 80px;
+    width: 80px;
+    margin-top: 8px;
+    object-fit: cover;
 `;
 
 export const WrapperStyleColImage = styled(Col)`

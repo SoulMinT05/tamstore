@@ -1,4 +1,4 @@
-import { Button, Form, Space } from 'antd';
+import { Avatar, Button, Form, Space } from 'antd';
 import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { WrapperHeader, WrapperUploadFile } from './style';
@@ -203,7 +203,9 @@ const AdminUser = () => {
         // {
         //     title: 'Image',
         //     dataIndex: 'image',
-        //     // render: (text) => <a>{text}</a>,
+        //     render: (link) => {
+        //         return <Avatar src={link} />;
+        //     },
         // },
         {
             title: 'Name',
@@ -450,7 +452,7 @@ const AdminUser = () => {
                 onOk={handleDeleteUser}
             >
                 <Loading isLoading={isLoadingDeleted}>
-                    <div>Are you sure to delete this account?</div>
+                    <div>Bạn có chắc chắn muốn xoá tài khoản này?</div>
                 </Loading>
             </ModalComponent>
         </div>

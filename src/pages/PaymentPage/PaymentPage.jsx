@@ -240,7 +240,7 @@ const PaymentPage = () => {
             <div style={{ background: '#f5f5fa', with: '100%', height: '100vh' }}>
                 <Loading isLoading={isLoadingAddOrder}>
                     <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
-                        <h3>Payment Method</h3>
+                        <h3>Phương thức giao hàng</h3>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <WrapperLeft>
                                 <WrapperInfo>

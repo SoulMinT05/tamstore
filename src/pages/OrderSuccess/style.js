@@ -79,6 +79,7 @@ export const WrapperItemOrderInfo = styled.div`
     width: 100%;
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
 `;
 
 export const WrapperTotal = styled.div`

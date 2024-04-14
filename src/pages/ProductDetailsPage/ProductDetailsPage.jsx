@@ -13,7 +13,7 @@ const ProductDetailsPage = () => {
                     <span style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => navigate('/')}>
                         Trang chủ
                     </span>
-                    - Detail product
+                    - Chi tiết sản phẩm
                 </h5>
                 <ProductDetailsComponent idProduct={id} />
             </div>

@@ -1,4 +1,4 @@
-import { Button, Form, Modal, Select, Space } from 'antd';
+import { Avatar, Button, Form, Modal, Rate, Select, Space } from 'antd';
 import { PlusOutlined, DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
 import React, { useRef } from 'react';
 import { WrapperHeader, WrapperUploadFile } from './style';
@@ -75,7 +75,7 @@ const AdminProduct = () => {
 
     const getAllProducts = async () => {
         //Set search and limit of product render
-        const res = await ProductService.getAllProduct('', 100);
+        const res = await ProductService.getAllProduct('', 20);
         return res;
     };
 
@@ -236,11 +236,13 @@ const AdminProduct = () => {
     });
 
     const columns = [
-        // {
-        //     title: 'Image',
-        //     dataIndex: 'image',
-        //     // render: (text) => <a>{text}</a>,
-        // },
+        {
+            title: 'Image',
+            dataIndex: 'image',
+            render: (link) => {
+                return <Avatar src={link} />;
+            },
+        },
         {
             title: 'Name',
             dataIndex: 'name',
@@ -250,6 +252,7 @@ const AdminProduct = () => {
         {
             title: 'Price',
             dataIndex: 'price',
+            render: (value) => <span>${value}</span>,
             sorter: (a, b) => a.price - b.price,
             filters: [
                 {
@@ -271,6 +274,9 @@ const AdminProduct = () => {
         {
             title: 'Rating',
             dataIndex: 'rating',
+            render: (rating) => {
+                return <Rate value={rating} allowHalf disabled />;
+            },
             sorter: (a, b) => a.rating - b.rating,
             filters: [
                 {
@@ -288,6 +294,10 @@ const AdminProduct = () => {
                 }
                 return Number(record.rating) < 4;
             },
+        },
+        {
+            title: 'Stock',
+            dataIndex: 'countInStock',
         },
         {
             title: 'Type',
@@ -725,7 +735,7 @@ const AdminProduct = () => {
                 onOk={handleDeleteProduct}
             >
                 <Loading isLoading={isLoadingDeleted}>
-                    <div>Are you sure to delete this product?</div>
+                    <div>Bạn có chắc chắn muốn xoá sản phẩm này?</div>
                 </Loading>
             </ModalComponent>
         </div>
