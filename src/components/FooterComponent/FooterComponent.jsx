@@ -4,31 +4,7 @@ function FooterComponent() {
     return (
         <div className="footer">
             <div className="sb__footer section__padding">
-                <div className="sb__footer-links">
-                    {/* <div className="sb__footer-links_div">
-                        <h4>For Business</h4>
-                        <Link>
-                            <p>Employer</p>
-                        </Link>
-                        <Link>
-                            <p>Employer</p>
-                        </Link>
-                        <Link>
-                            <p>Employer</p>
-                        </Link>
-                    </div> */}
-                    {/* <div className="sb__footer-links_div">
-                        <h4>Resources</h4>
-                        <Link>
-                            <p>Employer</p>
-                        </Link>
-                        <Link>
-                            <p>Employer</p>
-                        </Link>
-                        <Link>
-                            <p>Employer</p>
-                        </Link>
-                    </div> */}
+                {/* <div className="sb__footer-links">
                     <div className="sb__footer-links_div">
                         <h4>Contact</h4>
                         <Link>
@@ -44,6 +20,18 @@ function FooterComponent() {
                                 <i className="ri-mail-line contact-info__icon"></i>
                                 <h6>Email: contact@gmail.com</h6>
                             </p>
+                        </Link>
+                    </div>
+                    <div className="sb__footer-links_div">
+                        <h4>Customer Care</h4>
+                        <Link to="/sign-up">
+                            <p>Register</p>
+                        </Link>
+                        <Link to="/sign-in">
+                            <p>Login</p>
+                        </Link>
+                        <Link to="/">
+                            <p>Home</p>
                         </Link>
                     </div>
                     <div className="sb__footer-links_div">
@@ -84,7 +72,7 @@ function FooterComponent() {
                         </div>
                     </div>
                 </div>
-                <hr></hr>
+                <hr></hr> */}
                 <div className="sb__footer-below">
                     <div className="sb__footer-copyright">
                         <p>@{new Date().getFullYear()} Tam Nguyen. All right reserved</p>

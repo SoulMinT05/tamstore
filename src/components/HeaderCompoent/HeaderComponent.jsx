@@ -21,6 +21,7 @@ import { searchProduct } from '../../redux/slides/productSlide';
 const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     const navigate = useNavigate();
     const user = useSelector((state) => state.user);
+    console.log('user: ', user.isAdmin);
     const dispatch = useDispatch();
     const [userName, setUserName] = useState('');
     const [userAvatar, setUserAvatar] = useState('');
@@ -55,7 +56,11 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
             {user?.isAdmin && (
                 <WrapperContentPopup onClick={() => handleClickNavigate('admin')}>Quản lí hệ thống</WrapperContentPopup>
             )}
-            <WrapperContentPopup onClick={() => handleClickNavigate('my-order')}>Đơn hàng của tôi</WrapperContentPopup>
+            {user?.isAdmin === false && (
+                <WrapperContentPopup onClick={() => handleClickNavigate('my-order')}>
+                    Đơn hàng của tôi
+                </WrapperContentPopup>
+            )}
             <WrapperContentPopup onClick={() => handleClickNavigate()}>Đăng xuất</WrapperContentPopup>
         </div>
     );
@@ -79,8 +84,12 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
     };
 
     const onSearch = (e) => {
-        setSearch(e.target.value);
-        dispatch(searchProduct(e.target.value));
+        setSearch(e.target.value.toLowerCase());
+        console.log('searchHedaerCompo: ', e.target.value);
+        dispatch(searchProduct(e.target.value.toLowerCase()));
+        // setSearch(e.target.value.toLowerCase());
+        // console.log('searchHedaerCompo: ', e.target.value.toLowerCase());
+        // dispatch(searchProduct(e.target.value.toLowerCase()));
     };
 
     return (
@@ -95,7 +104,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                             size="large"
                             bordered={false}
                             textbutton="Tìm kiếm"
-                            placeholder="input search text"
+                            placeholder="Nhập sản phẩm tìm kiếm"
                             onChange={onSearch}
                         />
                     </Col>
@@ -139,14 +148,16 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false }) => {
                             )}
                         </WrapperHeaderAccout>
                     </Loading>
-                    {!isHiddenCart && (
-                        <div onClick={() => navigate('/order')} style-={{ cursor: 'pointer' }}>
-                            <Badge count={order?.orderItems?.length} size="small">
-                                <ShoppingCartOutlined style={{ fontSize: '30px', color: '#fff' }} />
-                            </Badge>
-                            <WrapperTextHeaderSmall>Giỏ hàng</WrapperTextHeaderSmall>
-                        </div>
-                    )}
+                    {user?.isAdmin === false
+                        ? !isHiddenCart && (
+                              <div onClick={() => navigate('/order')} style-={{ cursor: 'pointer' }}>
+                                  <Badge count={order?.orderItems?.length} size="small">
+                                      <ShoppingCartOutlined style={{ fontSize: '30px', color: '#fff' }} />
+                                  </Badge>
+                                  <WrapperTextHeaderSmall>Giỏ hàng</WrapperTextHeaderSmall>
+                              </div>
+                          )
+                        : null}
                 </Col>
             </WrapperHeader>
         </div>

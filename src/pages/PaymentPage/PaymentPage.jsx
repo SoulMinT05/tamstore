@@ -171,7 +171,7 @@ const PaymentPage = () => {
                 arrayOrdered.push(element.product);
             });
             dispatch(removeAllOrderProduct({ listChecked: arrayOrdered }));
-            message.success('Order successfully!');
+            message.success('Đặt hàng thành công!');
             navigate('/orderSuccess', {
                 state: {
                     delivery,
@@ -240,10 +240,10 @@ const PaymentPage = () => {
             <div style={{ background: '#f5f5fa', with: '100%', height: '100vh' }}>
                 <Loading isLoading={isLoadingAddOrder}>
                     <div style={{ height: '100%', width: '1270px', margin: '0 auto' }}>
-                        <h3>Phương thức giao hàng</h3>
+                        <h3>Thanh toán</h3>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <WrapperLeft>
-                                <WrapperInfo>
+                                {/* <WrapperInfo>
                                     <div>
                                         <Label>Chọn phương thức giao hàng</Label>
                                         <WrapperRadio onChange={handleDilivery} value={delivery}>
@@ -257,7 +257,7 @@ const PaymentPage = () => {
                                             </Radio>
                                         </WrapperRadio>
                                     </div>
-                                </WrapperInfo>
+                                </WrapperInfo> */}
                                 <WrapperInfo>
                                     <div>
                                         <Label>Chọn phương thức thanh toán</Label>
@@ -272,15 +272,15 @@ const PaymentPage = () => {
                                 <div style={{ width: '100%' }}>
                                     <WrapperInfo>
                                         <div>
-                                            <span>Address: </span>
-                                            <span
-                                                style={{ fontWeight: 'bold' }}
-                                            >{`${user?.address}, ${user?.city}`}</span>
+                                            <span>Địa chỉ: </span>
+                                            <span style={{ fontWeight: 'bold' }}>
+                                                {`${user?.address}, ${user?.city}`}.{' '}
+                                            </span>
                                             <span
                                                 onClick={handleChangeAddress}
                                                 style={{ color: 'blue', cursor: 'pointer' }}
                                             >
-                                                Change
+                                                Thay đổi
                                             </span>
                                         </div>
                                     </WrapperInfo>
@@ -306,7 +306,7 @@ const PaymentPage = () => {
                                         >
                                             <span>Giảm giá</span>
                                             <span style={{ color: '#000', fontSize: '14px', fontWeight: 'bold' }}>
-                                                {convertPrice(priceDiscountMemo)}%
+                                                {convertPrice(priceDiscountMemo)}
                                             </span>
                                         </div>
 

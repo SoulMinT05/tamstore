@@ -11,6 +11,19 @@ export const getAllProduct = async (search, limit) => {
         res = await axios.get(`${process.env.REACT_APP_API_URL}/product/get-all?limit=${limit}`);
     }
     return res.data;
+
+    // let res = {};
+    // if (search.toLowerCase()?.length > 0) {
+    //     console.log('searchProductService: ', search.toLowerCase());
+    //     res = await axios.get(
+    //         `${
+    //             process.env.REACT_APP_API_URL
+    //         }/product/get-all?filter=name&filter=${search.toLowerCase()}&limit=${limit}`,
+    //     );
+    // } else {
+    //     res = await axios.get(`${process.env.REACT_APP_API_URL}/product/get-all?limit=${limit}`);
+    // }
+    // return res.data;
 };
 
 export const getProductType = async (type, page, limit) => {

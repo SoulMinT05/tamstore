@@ -39,6 +39,7 @@ const DetailsOrderPage = () => {
         },
     );
     const { isLoading, data } = queryOrder;
+    console.log('data: ', data);
 
     const priceMemo = useMemo(() => {
         const result = data?.orderItems?.reduce((total, cur) => {
@@ -67,7 +68,7 @@ const DetailsOrderPage = () => {
                                 </div>
                             </WrapperContentInfo>
                         </WrapperInfoUser>
-                        <WrapperInfoUser>
+                        {/* <WrapperInfoUser>
                             <WrapperLabel>Hình thức giao hàng</WrapperLabel>
                             <WrapperContentInfo>
                                 <div className="delivery-info">
@@ -87,7 +88,7 @@ const DetailsOrderPage = () => {
                                     {data?.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'}
                                 </div>
                             </WrapperContentInfo>
-                        </WrapperInfoUser>
+                        </WrapperInfoUser> */}
                     </WrapperHeaderUser>
                     <WrapperStyleContent>
                         <div
@@ -123,7 +124,7 @@ const DetailsOrderPage = () => {
                                                 height: '70px',
                                             }}
                                         >
-                                            Điện thoại
+                                            {order?.name}
                                         </div>
                                     </WrapperNameProduct>
                                     <WrapperItem>{convertPrice(order?.price)}</WrapperItem>

@@ -355,7 +355,7 @@ const AdminUser = () => {
                 />
             </div>
             <DrawerComponent
-                title="Detail user"
+                title="Chi tiết người dùng"
                 isOpen={isOpenDrawer}
                 onClose={() => setIsOpenDrawer(false)}
                 width="90%"

@@ -14,20 +14,25 @@ import { useDebounce } from '../../hooks/useDebounce';
 
 const HomePage = () => {
     const searchProduct = useSelector((state) => state.product?.search);
-    // const searchDebounce = useDebounce(searchProduct.toLowerCase(), 1000); // Chuyển đổi thành chữ thường
-    const searchDebounce = useDebounce(searchProduct, 200);
+    console.log('searchProduct---Origin: ', searchProduct);
+    const searchDebounce = useDebounce(searchProduct, 1000000);
+    console.log('searchDebounce: ', searchDebounce);
     const [loading, setLoading] = useState(false);
     const [limit, setLimit] = useState(6);
     const [typeProducts, setTypeProducts] = useState([]);
 
-    // const arr = ['T-Shirt', 'Shirt', 'Jacket', 'Camisole', 'Ao Dai', 'Dress'];
     const fetchProductAll = async (context) => {
         const limit = context?.queryKey && context?.queryKey[1];
         const search = context?.queryKey && context?.queryKey[2];
-        const res = await ProductService.getAllProduct(search, limit);
+        console.log('search: ', search);
 
+        const res = await ProductService.getAllProduct(search, limit);
+        console.log('resFetchAll: ', res);
         return res;
     };
+    // useEffect(() => {
+    //     console.log('searchProduct----Effect: ', searchProduct);
+    // }, [searchProduct]);
 
     const fetchAllTypeProduct = async () => {
         const res = await ProductService.getAllTypeProduct();
@@ -50,6 +55,11 @@ const HomePage = () => {
         fetchAllTypeProduct();
     }, []);
 
+    const filterProduct = products?.data.filter((item) => {
+        console.log('item.name.toLowerCase(): ', item.name.toLowerCase());
+        return item.name.toLowerCase().includes(searchProduct.toLowerCase());
+    });
+    console.log('filterProduct: ', filterProduct);
     return (
         <Loading isLoading={isLoading || loading}>
             <div style={{ width: '1270px', margin: '0 auto' }}>
@@ -63,7 +73,8 @@ const HomePage = () => {
                 <div id="container" style={{ minHeight: '1000px', width: '1270px', margin: '0 auto' }}>
                     <SliderComponent arrImages={[slider1, slider2, slider3]} />
                     <WrapperProducts>
-                        {products?.data?.map((product) => {
+                        {/* {products?.data?.map((product) => { */}
+                        {filterProduct?.map((product) => {
                             return (
                                 <CardComponent
                                     key={product._id}
@@ -71,6 +82,11 @@ const HomePage = () => {
                                     description={product.description}
                                     image={product.image}
                                     name={product.name}
+                                    // {formatProductName(
+                                    //     // {product.name.toLowerCase()}
+                                    //     product.name,
+                                    // )
+                                    // }
                                     price={product.price}
                                     rating={product.rating}
                                     type={product.type}
@@ -83,7 +99,7 @@ const HomePage = () => {
                     </WrapperProducts>
                     <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                         <WrapperButtonMore
-                            textbutton={isPreviousData ? 'Loading.....' : 'See more'}
+                            textbutton={isPreviousData ? 'Loading.....' : 'Xem thêm'}
                             type="outline"
                             styleButton={{
                                 // border: '1px solid rgb(11, 116, 229)',
@@ -99,6 +115,7 @@ const HomePage = () => {
                                 height: '38px',
                                 borderRadius: '4px',
                                 marginTop: '16px',
+                                marginBottom: '8px',
                             }}
                             disabled={products?.total === products?.data?.length || products?.totalPage === 1}
                             styletextbutton={{

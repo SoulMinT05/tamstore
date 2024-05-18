@@ -38,6 +38,7 @@ const OrderPage = () => {
     const navigate = useNavigate();
     const order = useSelector((state) => state.order);
     const user = useSelector((state) => state.user);
+    console.log('user: ', user);
     const [rowSelected, setRowSelected] = useState('');
 
     const [listChecked, setListChecked] = useState([]);
@@ -129,12 +130,19 @@ const OrderPage = () => {
     }, [order]);
 
     const deliveryPriceMemo = useMemo(() => {
-        if (priceMemo >= 50 && priceMemo < 120) {
-            return 2;
-        } else if (priceMemo >= 120 || order?.orderItemsSelected?.length === 0 || priceMemo === 0) {
+        // if (priceMemo >= 50 && priceMemo < 120) {
+        //     return 2;
+        // } else if (priceMemo >= 120 || order?.orderItemsSelected?.length === 0 || priceMemo === 0) {
+        //     return 0;
+        // } else {
+        //     return 5;
+        // }
+        if (priceMemo >= 100000 && priceMemo < 500000) {
+            return 10000;
+        } else if (priceMemo >= 500000 || order?.orderItemsSelected?.length === 0 || priceMemo === 0) {
             return 0;
         } else {
-            return 5;
+            return 20000;
         }
     }, [priceMemo]);
 
@@ -148,8 +156,12 @@ const OrderPage = () => {
         }
     };
     const handleAddCard = () => {
+        console.log('userHandleAddCard: ', user);
         if (!order?.orderItemsSelected?.length) {
-            message.error('Please select product!');
+            message.error('Vui lòng chọn sản phẩm!');
+        } else if (user?.id === '') {
+            message.warning('Bạn cần phải đăng nhập tài khoản trước');
+            navigate('/sign-in');
         } else if (!user?.phone || !user.address || !user.name || !user.city) {
             setIsOpenModalUpdateInfo(true);
         } else {
@@ -175,6 +187,8 @@ const OrderPage = () => {
 
     const { isLoading, data } = mutationUpdate;
 
+    console.log('data: ', data);
+
     const handleUpdateInfoUser = () => {
         const { name, address, city, phone } = stateUserDetails;
         if (name && address && city && phone) {
@@ -183,13 +197,14 @@ const OrderPage = () => {
                 {
                     onSuccess: () => {
                         dispatch(updateUser({ name, address, city, phone }));
-
                         setIsOpenModalUpdateInfo(false);
+                        window.location.reload();
                     },
                 },
             );
         }
     };
+    console.log('stateUserDetails: ', stateUserDetails);
 
     const handleOnchangeDetails = (e) => {
         setStateUserDetails({
@@ -198,17 +213,29 @@ const OrderPage = () => {
         });
     };
     const itemsDelivery = [
+        // {
+        //     title: '5$',
+        //     description: 'Dưới 50$',
+        // },
+        // {
+        //     title: '2$',
+        //     description: 'Từ 50$ đến dưới 120$',
+        // },
+        // {
+        //     title: '0$',
+        //     description: 'Trên 120$',
+        // },
         {
-            title: '5$',
-            description: 'Under 50$',
+            title: '20000 VND',
+            description: 'Dưới 100000 VND',
         },
         {
-            title: '2$',
-            description: 'From 50$ to under 120$',
+            title: '10000 VND',
+            description: 'Từ 100000 VND đến dưới 500000 VND',
         },
         {
-            title: '0$',
-            description: 'Over 120$',
+            title: '0 VND',
+            description: 'Trên 500000 VND',
         },
     ];
     return (
@@ -446,8 +473,7 @@ const OrderPage = () => {
             </div>
             <ModalComponent
                 forceRender
-                title="
-                Update delivery information"
+                title="Cập nhật thông tin giao hàng"
                 open={isOpenModalUpdateInfo}
                 onCancel={handleCancelUpdate}
                 onOk={handleUpdateInfoUser}
@@ -461,22 +487,14 @@ const OrderPage = () => {
                         autoComplete="on"
                         form={form}
                     >
-                        <Form.Item
-                            label="Name"
-                            name="name"
-                            rules={[{ required: true, message: 'Please input your name!' }]}
-                        >
+                        <Form.Item label="Name" name="name" rules={[{ required: true, message: 'hãy nhập name!' }]}>
                             <InputComponent
                                 value={stateUserDetails['name']}
                                 onChange={handleOnchangeDetails}
                                 name="name"
                             />
                         </Form.Item>
-                        <Form.Item
-                            label="City"
-                            city="city"
-                            rules={[{ required: true, message: 'Please input your city!' }]}
-                        >
+                        <Form.Item label="City" city="city" rules={[{ required: true, message: 'Hãy nhập city!' }]}>
                             <InputComponent
                                 value={stateUserDetails['city']}
                                 onChange={handleOnchangeDetails}
@@ -484,11 +502,7 @@ const OrderPage = () => {
                             />
                         </Form.Item>
 
-                        <Form.Item
-                            label="Phone"
-                            name="phone"
-                            rules={[{ required: true, message: 'Please input your phone!' }]}
-                        >
+                        <Form.Item label="Phone" name="phone" rules={[{ required: true, message: 'hãy nhập phone!' }]}>
                             <InputComponent
                                 value={stateUserDetails.phone}
                                 onChange={handleOnchangeDetails}
@@ -498,7 +512,7 @@ const OrderPage = () => {
                         <Form.Item
                             label="Address"
                             name="address"
-                            rules={[{ required: true, message: 'Please input your address!' }]}
+                            rules={[{ required: true, message: 'hãy nhập address!' }]}
                         >
                             <InputComponent
                                 value={stateUserDetails.address}

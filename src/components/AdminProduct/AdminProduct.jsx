@@ -5,7 +5,7 @@ import { WrapperHeader, WrapperUploadFile } from './style';
 import TableComponent from '../TableComponent/TableComponent';
 import { useState } from 'react';
 import InputComponent from '../InputComponent/InputComponent';
-import { getBase64, renderOptions } from '../../utils';
+import { convertPrice, getBase64, renderOptions } from '../../utils';
 import * as ProductService from '../../services/ProductService';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import Loading from '../../components/LoadingComponent/Loading';
@@ -29,7 +29,7 @@ const AdminProduct = () => {
         name: '',
         price: '',
         description: '',
-        rating: '',
+        // rating: '',
         image: '',
         type: '',
         countInStock: '',
@@ -42,12 +42,13 @@ const AdminProduct = () => {
     const [form] = Form.useForm();
 
     const mutation = useMutationHooks((data) => {
-        const { name, price, description, rating, image, type, countInStock, discount } = data;
+        // const { name, price, description, rating, image, type, countInStock, discount } = data;
+        const { name, price, description, image, type, countInStock, discount } = data;
         const res = ProductService.createProduct({
             name,
             price,
             description,
-            rating,
+            // rating,
             image,
             type,
             countInStock,
@@ -86,7 +87,7 @@ const AdminProduct = () => {
                 name: res?.data?.name,
                 price: res?.data?.price,
                 description: res?.data?.description,
-                rating: res?.data?.rating,
+                // rating: res?.data?.rating,
                 image: res?.data?.image,
                 type: res?.data?.type,
                 countInStock: res?.data?.countInStock,
@@ -252,7 +253,7 @@ const AdminProduct = () => {
         {
             title: 'Price',
             dataIndex: 'price',
-            render: (value) => <span>${value}</span>,
+            render: (value) => <span>{convertPrice(value)}</span>,
             sorter: (a, b) => a.price - b.price,
             filters: [
                 {
@@ -271,30 +272,30 @@ const AdminProduct = () => {
                 return record.price <= 50;
             },
         },
-        {
-            title: 'Rating',
-            dataIndex: 'rating',
-            render: (rating) => {
-                return <Rate value={rating} allowHalf disabled />;
-            },
-            sorter: (a, b) => a.rating - b.rating,
-            filters: [
-                {
-                    text: '>= 4',
-                    value: '>=',
-                },
-                {
-                    text: '< 4',
-                    value: '<',
-                },
-            ],
-            onFilter: (value, record) => {
-                if (value === '>=') {
-                    return Number(record.rating) >= 4;
-                }
-                return Number(record.rating) < 4;
-            },
-        },
+        // {
+        //     title: 'Rating',
+        //     dataIndex: 'rating',
+        //     render: (rating) => {
+        //         return <Rate value={rating} allowHalf disabled />;
+        //     },
+        //     sorter: (a, b) => a.rating - b.rating,
+        //     filters: [
+        //         {
+        //             text: '>= 4',
+        //             value: '>=',
+        //         },
+        //         {
+        //             text: '< 4',
+        //             value: '<',
+        //         },
+        //     ],
+        //     onFilter: (value, record) => {
+        //         if (value === '>=') {
+        //             return Number(record.rating) >= 4;
+        //         }
+        //         return Number(record.rating) < 4;
+        //     },
+        // },
         {
             title: 'Stock',
             dataIndex: 'countInStock',
@@ -347,7 +348,7 @@ const AdminProduct = () => {
             name: '',
             price: '',
             description: '',
-            rating: '',
+            // rating: '',
             image: '',
             type: '',
             countInStock: '',
@@ -368,6 +369,8 @@ const AdminProduct = () => {
         setIsModalOpenDelete(false);
     };
 
+    ///////////////////////////////////////
+
     const handleDeleteProduct = () => {
         mutationDeleted.mutate(
             { id: rowSelected, token: user?.access_token },
@@ -385,7 +388,7 @@ const AdminProduct = () => {
             name: '',
             price: '',
             description: '',
-            rating: '',
+            // rating: '',
             image: '',
             type: '',
             countInStock: '',
@@ -399,7 +402,7 @@ const AdminProduct = () => {
             name: stateProduct.name,
             price: stateProduct.price,
             description: stateProduct.description,
-            rating: stateProduct.rating,
+            // rating: stateProduct.rating,
             image: stateProduct.image,
             type: stateProduct.type === 'add_type' ? stateProduct.newType : stateProduct.type,
             countInStock: stateProduct.countInStock,
@@ -561,13 +564,13 @@ const AdminProduct = () => {
                                 name="description"
                             />
                         </Form.Item>
-                        <Form.Item
+                        {/* <Form.Item
                             label="Rating"
                             name="rating"
                             rules={[{ required: true, message: 'Please input your count rating!' }]}
                         >
                             <InputComponent value={stateProduct.rating} onChange={handleOnchange} name="rating" />
-                        </Form.Item>
+                        </Form.Item> */}
                         <Form.Item
                             label="Discount"
                             name="discount"
@@ -606,7 +609,7 @@ const AdminProduct = () => {
                 </Loading>
             </ModalComponent>
             <DrawerComponent
-                title="Detail product"
+                title="Chi tiết sản phẩm"
                 isOpen={isOpenDrawer}
                 onClose={() => setIsOpenDrawer(false)}
                 width="90%"
@@ -676,7 +679,7 @@ const AdminProduct = () => {
                                 name="description"
                             />
                         </Form.Item>
-                        <Form.Item
+                        {/* <Form.Item
                             label="Rating"
                             name="rating"
                             rules={[{ required: true, message: 'Please input your rating!' }]}
@@ -686,7 +689,7 @@ const AdminProduct = () => {
                                 onChange={handleOnchangeDetails}
                                 name="rating"
                             />
-                        </Form.Item>
+                        </Form.Item> */}
                         <Form.Item
                             label="Discount"
                             name="discount"

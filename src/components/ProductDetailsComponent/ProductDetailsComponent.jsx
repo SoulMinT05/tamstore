@@ -65,7 +65,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
 
     useEffect(() => {
         if (order.isSuccessOrder) {
-            message.success('Added to cart');
+            message.success('Thêm sản phẩm thành công');
         }
         return () => {
             dispatch(resetOrder());
@@ -86,9 +86,12 @@ const ProductDetailsComponent = ({ idProduct }) => {
     const { isLoading, data: productDetails } = useQuery(['product-details', idProduct], fetchGetDetailsProduct, {
         enabled: !!idProduct,
     });
+    console.log('productDetails: ', productDetails);
     const handleAddOrderProduct = () => {
         if (!user?.id) {
+            message.warning('Bạn cần phải đăng nhập tài khoản');
             navigate('/sign-in', { state: location?.pathname });
+            // message.warning('Bạn cần phải đăng nhập tài khoản');
         } else {
             const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id);
             if (
@@ -148,17 +151,17 @@ const ProductDetailsComponent = ({ idProduct }) => {
                     <WrapperStyleNameProduct>{productDetails?.name}</WrapperStyleNameProduct>
                     <div>
                         {/* {renderStar(productDetails?.rating)} */}
-                        <Rate allowHalf defaultValue={productDetails?.rating} value={productDetails?.rating} />
-                        <WrapperStyleTextSell> | Sold 1000+</WrapperStyleTextSell>
+                        {/* <Rate allowHalf defaultValue={productDetails?.rating} value={productDetails?.rating} /> */}
+                        <WrapperStyleTextSell> Đã bán {productDetails?.sold}</WrapperStyleTextSell>
                     </div>
                     <WrapperPriceProduct>
                         <WrapperPriceTextProduct>{convertPrice(productDetails?.price)}</WrapperPriceTextProduct>
                     </WrapperPriceProduct>
-                    <WrapperAddressProduct>
+                    {/* <WrapperAddressProduct>
                         <span>Giao đến </span>
                         <span className="address">{user?.address || '127 Nguyen Van Cu, Can Tho'}</span> -
-                        <span className="change-address">Đổi địa chỉ</span>
-                    </WrapperAddressProduct>
+                        <span className="change-address"> Đổi địa chỉ</span>
+                    </WrapperAddressProduct> */}
                     <LikeButtonComponent
                         dataHref={
                             process.env.REACT_APP_IS_LOCAL
@@ -207,17 +210,17 @@ const ProductDetailsComponent = ({ idProduct }) => {
                                 styleButton={{
                                     background: 'rgb(255, 57, 69)',
                                     height: '48px',
-                                    width: '220px',
+                                    width: '440px',
                                     border: 'none',
                                     borderRadius: '4px',
                                 }}
                                 onClick={handleAddOrderProduct}
-                                textbutton={'Chọn mua'}
+                                textbutton={'Thêm vào giỏ hàng'}
                                 styletextbutton={{ color: '#fff', fontSize: '15px', fontWeight: '700' }}
                             ></ButtonComponent>
                             {errorLimitOrder && <div style={{ color: 'red' }}>Product sold out</div>}
                         </div>
-                        <ButtonComponent
+                        {/* <ButtonComponent
                             size={40}
                             styleButton={{
                                 background: '#fff',
@@ -228,7 +231,7 @@ const ProductDetailsComponent = ({ idProduct }) => {
                             }}
                             textbutton={'Mua trả sau'}
                             styletextbutton={{ color: 'rgb(13, 92, 182)', fontSize: '15px' }}
-                        ></ButtonComponent>
+                        ></ButtonComponent> */}
                     </div>
                 </Col>
                 <CommentComponent

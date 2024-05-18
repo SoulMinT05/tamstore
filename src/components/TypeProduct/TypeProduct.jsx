@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-
+import './TypeProduct.css'
 const TypeProduct = ({ name }) => {
     const navigate = useNavigate();
     const handleNavigatetype = (type) => {
@@ -13,7 +13,11 @@ const TypeProduct = ({ name }) => {
         );
     };
     return (
-        <div style={{ padding: '0 10px', cursor: 'pointer' }} onClick={() => handleNavigatetype(name)}>
+        <div
+            className="type__hover"
+            style={{ padding: '0 10px', cursor: 'pointer' }}
+            onClick={() => handleNavigatetype(name)}
+        >
             {name}
         </div>
     );

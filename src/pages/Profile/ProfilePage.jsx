@@ -39,7 +39,7 @@ const ProfilePage = () => {
 
     useEffect(() => {
         if (isSuccess) {
-            message.success();
+            message.success('Cập nhật thông tin thành công');
             handleGetDetailsUser(user?.id, user?.access_token);
         } else if (isError) {
             message.error();

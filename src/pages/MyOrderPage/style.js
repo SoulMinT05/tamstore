@@ -70,7 +70,8 @@ export const WrapperItemOrder = styled.div`
     margin: 0 auto;
     background: #fff;
     border-radius: 6px;
-    box-shadow: 0 12px 12px #ccc;
+    // box-shadow: 0 12px 12px #ccc;
+    margin-bottom: 8px;
 `;
 
 export const WrapperStatus = styled.div`

@@ -45,3 +45,29 @@ export const getAllOrder = async (id, access_token) => {
     });
     return res.data;
 };
+
+export const updateOrder = async (id, access_token, data) => {
+    const res = await axiosJWT.put(`${process.env.REACT_APP_API_URL}/order/update/${id}`, data, {
+        headers: {
+            token: `Bearer ${access_token}`,
+        },
+    });
+    return res.data;
+};
+
+export const deleteOrder = async (id, access_token) => {
+    const res = await axiosJWT.delete(`${process.env.REACT_APP_API_URL}/order/delete/${id}`, {
+        headers: {
+            token: `Bearer ${access_token}`,
+        },
+    });
+    return res.data;
+};
+export const deleteManyOrder = async (data, access_token) => {
+    const res = await axiosJWT.post(`${process.env.REACT_APP_API_URL}/order/delete-many`, data, {
+        headers: {
+            token: `Bearer ${access_token}`,
+        },
+    });
+    return res.data;
+};

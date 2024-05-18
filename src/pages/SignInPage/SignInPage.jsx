@@ -13,7 +13,7 @@ import Loading from '../../components/LoadingComponent/Loading';
 import jwt_decode from 'jwt-decode';
 import { useDispatch } from 'react-redux';
 import { updateUser } from '../../redux/slides/userSlide';
-
+import * as message from '../../components/Message/Message';
 const SignInPage = () => {
     const [isShowPassword, setIsShowPassword] = useState(false);
     const location = useLocation();
@@ -31,6 +31,7 @@ const SignInPage = () => {
             if (location?.state) {
                 navigate(location?.state);
             } else {
+                message.success('Đăng nhập thành công');
                 navigate('/');
             }
             localStorage.setItem('access_token', JSON.stringify(data?.access_token));
@@ -83,7 +84,7 @@ const SignInPage = () => {
             <div style={{ width: '800px', height: '445px', borderRadius: '6px', background: '#fff', display: 'flex' }}>
                 <WrapperContainerLeft>
                     <h1>Xin chào</h1>
-                    <p>Đăng nhập vào tạo tài khoản</p>
+                    <p>Đăng nhập tài khoản</p>
                     <InputForm
                         style={{ marginBottom: '10px' }}
                         placeholder="Email"

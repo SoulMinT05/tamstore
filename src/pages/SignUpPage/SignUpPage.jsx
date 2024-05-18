@@ -32,7 +32,7 @@ const SignUpPage = () => {
 
     useEffect(() => {
         if (isSuccess && data?.status !== 'ERR') {
-            message.success();
+            message.success('Đăng kí thành công');
             handleNavigateSignIn();
         } else if (isError) {
             message.error();
@@ -68,7 +68,7 @@ const SignUpPage = () => {
             <div style={{ width: '800px', height: '445px', borderRadius: '6px', background: '#fff', display: 'flex' }}>
                 <WrapperContainerLeft>
                     <h1>Xin chào</h1>
-                    <p>Đăng nhập vào tạo tài khoản</p>
+                    <p>Đăng kí để tạo tài khoản</p>
                     <InputForm
                         style={{ marginBottom: '10px' }}
                         placeholder="Email"
