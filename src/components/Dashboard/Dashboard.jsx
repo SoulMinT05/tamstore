@@ -11,10 +11,10 @@ import { convertPrice } from '../../utils';
 import TableComponent from '../TableComponent/TableComponent';
 import './Dashboard.css';
 
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import { Bar, Pie } from 'react-chartjs-2';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 function Dashboard() {
     const user = useSelector((state) => state?.user);
@@ -42,39 +42,11 @@ function Dashboard() {
     let totalSold = 0;
     for (let i = 0; i < orders?.data.length; i++) {
         total += orders?.data[i]?.totalPrice;
-        // if (typeof totalSold !== NaN) {
-        //     totalSold += Number(products?.data[i]?.sold);
-        // }
         if (!isNaN(products?.data[i]?.sold)) {
             totalSold += Number(products?.data[i]?.sold);
         }
     }
 
-    // const columns = [
-    //     {
-    //         title: 'Username',
-    //         // dataIndex: 'shippingAddress',
-    //         // sorter: (a, b) => a.shippingAddress.fullName.length - b.shippingAddress.fullName.length,
-    //         dataIndex: 'shippingAddress.fullName', // Sử dụng 'shippingAddress.fullName' làm dataIndex
-    //         sorter: (a, b) => a['shippingAddress.fullName'].localeCompare(b['shippingAddress.fullName']), // Sắp xếp theo fullName
-    //     },
-    //     {
-    //         title: 'Phone',
-    //         dataIndex: 'phone',
-    //         sorter: (a, b) => a.phone.length - b.phone.length,
-    //     },
-    //     {
-    //         title: 'Address',
-    //         dataIndex: 'address',
-    //         sorter: (a, b) => a.address - b.address,
-    //     },
-    //     {
-    //         title: 'Total price',
-    //         dataIndex: 'totalPrice',
-    //         sorter: (a, b) => a.totalPrice - b.totalPrice,
-    //     },
-    //     // (dataSourceOrder = { dataSourceOrder }),
-    // ];
     const columns = [
         {
             title: 'Image',
@@ -99,24 +71,16 @@ function Dashboard() {
             dataIndex: 'type',
         },
         {
-            title: 'Rating',
-            dataIndex: 'rating',
-            render: (rating) => {
-                return <Rate value={rating} allowHalf disabled />;
-            },
+            title: 'Sold',
+            dataIndex: 'sold',
+            render: (value) => <span>{value}</span>,
+            sorter: (a, b) => a.sold - b.sold,
         },
     ];
-    // const dataTable =
-    //     orders?.data?.length &&
-    //     orders?.data
-    //         .slice(Math.max(orders.data.length - 5, 0)) // Lấy 5 sản phẩm cuối cùng
-    //         .map((order) => {
-    //             return { ...order, key: order._id };
-    //         });
     const dataTable =
         products?.data?.length &&
         products?.data
-            .sort((a, b) => b.rating - a.rating) // Sắp xếp sản phẩm theo rating giảm dần
+            .sort((a, b) => b.sold - a.sold) // Sắp xếp sản phẩm theo rating giảm dần
             .slice(0, 3) // Lấy 3 sản phẩm đầu tiên
             .map((product) => {
                 return { ...product, key: product._id };
@@ -200,25 +164,35 @@ function Dashboard() {
                         }
                         title={'Doanh thu'}
                         value={convertPrice(total)}
-                        // value={total}
                     />
                 </Space>
                 {/* <div className="mt-24">
-                    <h5 className="rating_product">Sản phẩm xếp hạng tốt nhất</h5>
+                    <h5 className="rating_product">Sản phẩm bán nhiều nhất</h5>
                     <TableComponent
                         columns={columns}
                         isLoading={isLoadingProducts}
                         data={dataTable}
-                        pagination={{ pageSize: 5 }}
+                        pagination={false}
                     />
                 </div> */}
-                {/* <Space direction="horizontal">
-                    <RecentOrders />
-                </Space> */}
+                <Space direction="horizontal" className="mt-24">
+                    <TableComponent
+                        columns={columns}
+                        isLoading={isLoadingProducts}
+                        data={dataTable}
+                        pagination={false}
+                    />
+                    <PieChart />
+                </Space>
                 <div className="mt-24">
-                    <h3 className="rating_product">Thống kê doanh thu</h3>
+                    <h3 className="rating_product">Áo bán nhiều nhất</h3>
                     <DashboardChart />
                 </div>
+
+                {/* <div className="mt-24">
+                    <h3 className="rating_product">Số lượng loại áo đã bán</h3>
+                    <PieChart />
+                </div> */}
             </Loading>
         </div>
     );
@@ -243,10 +217,19 @@ export function DashboardChart() {
     useEffect(() => {
         OrderService.getAllOrder().then((res) => {
             const labels = res?.data.map((order) => {
-                return order?.shippingAddress?.fullName;
+                const dateObject = new Date(order?.createdAt);
+                // Lấy ngày, tháng và năm
+                const day = dateObject.getDate();
+                const month = dateObject.getMonth() + 1; // Tháng bắt đầu từ 0 nên cần cộng thêm 1
+                const year = dateObject.getFullYear();
+                // console.log('labels: ', order);
+                // Tạo chuỗi định dạng "ngày tháng năm"
+                const formattedDate = `${day}/${month}/${year}`;
+                // console.log(formattedDate);
+                // return order?.shippingAddress?.fullName;
+                return formattedDate;
             });
             const data = res?.data.map((order) => {
-                // return `User-${order.totalPrice}`
                 return order.totalPrice;
             });
             const dataSource = {
@@ -279,8 +262,6 @@ export function DashboardChart() {
                     // Định dạng số liệu trên trục tung
                     callback: function (value, index, values) {
                         return convertPrice(value); // Định dạng số liệu hiển thị với dấu $
-                        // return value.toFixed(2); // Định dạng số liệu hiển thị với 2 chữ số sau dấu thập phân
-                        // return value.toString(); // Định dạng số liệu hiển thị dưới dạng chuỗi
                     },
                     // Các tùy chọn khác cho số liệu trên trục tung
                     fontSize: 12, // Cỡ chữ của số liệu
@@ -297,5 +278,135 @@ export function DashboardChart() {
         </Card>
     );
 }
+
+export const PieChart = () => {
+    const [dataPieChart, setDataPieChart] = useState(null);
+
+    useEffect(() => {
+        ProductService.getAllProduct().then((res) => {
+            const products = res.data;
+            const productTypes = {}; // Đếm số lượng sản phẩm của mỗi loại áo
+            console.log('productTypes: ', productTypes);
+
+            products.forEach((product) => {
+                console.log('product: ', product);
+                if (!isNaN(product.sold) || product.sold !== undefined) {
+                    if (product.type in productTypes) {
+                        productTypes[product.type] = productTypes[product.type] += product.sold;
+                        console.log('product.type: ', product.type);
+                    } else {
+                        productTypes[product.type] = product.sold;
+                        console.log('product.type: ', product.type);
+                    }
+                }
+            });
+            console.log('productTypes: ', productTypes);
+
+            const labels = Object.keys(productTypes);
+            const data = Object.values(productTypes);
+
+            const dataSource = {
+                labels: labels,
+                datasets: [
+                    {
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(153, 102, 255, 0.6)',
+                            'rgba(255, 159, 64, 0.6)',
+                        ],
+                    },
+                ],
+            };
+
+            setDataPieChart(dataSource);
+        });
+    }, []);
+    // const options = {
+    //     legend: {
+    //         display: true, // Hiển thị vùng chú thích
+    //         position: 'bottom', // Vị trí của vùng chú thích (có thể là 'top', 'bottom', 'left', 'right')
+    //         labels: {
+    //             fontColor: 'black', // Màu chữ của các nhãn trong vùng chú thích
+    //         },
+    //     },
+    // };
+
+    const options = {
+        tooltips: {
+            callbacks: {
+                label: function (tooltipItem, data) {
+                    var dataset = data.datasets[tooltipItem.datasetIndex];
+                    var total = dataset.data.reduce(function (previousValue, currentValue, currentIndex, array) {
+                        return previousValue + currentValue;
+                    });
+                    var currentValue = dataset.data[tooltipItem.index];
+                    var percentage = Math.floor((currentValue / total) * 100 + 0.5); // làm tròn phần trăm
+                    return data.labels[tooltipItem.index] + ': ' + currentValue + ' (' + percentage + '%)';
+                },
+            },
+        },
+        legend: {
+            display: true,
+            position: 'bottom',
+            labels: {
+                fontColor: 'black',
+            },
+        },
+    };
+
+    return <div>{dataPieChart && <Pie data={dataPieChart} options={options} />}</div>;
+};
+
+// export const PieChart = () => {
+//     const [dataPieChart, setDataPieChart] = useState(null);
+
+//     useEffect(() => {
+//         ProductService.getAllProduct().then((res) => {
+//             const products = res.data;
+
+//             // Đếm số lượng sản phẩm được bán của mỗi loại áo
+//             const productTypes = {};
+//             products.forEach((product) => {
+//                 if (product.type in productTypes) {
+//                     productTypes[product.type] += product.sold;
+//                 } else {
+//                     productTypes[product.type] = product.sold;
+//                 }
+//             });
+
+//             // Sắp xếp các loại áo theo số lượng bán được giảm dần
+//             const sortedTypes = Object.keys(productTypes).sort((a, b) => productTypes[b] - productTypes[a]);
+
+//             // Chọn ra 3 loại áo đầu tiên
+//             const top3Types = sortedTypes.slice(0, 3);
+
+//             // Lấy dữ liệu số lượng sản phẩm bán được của 3 loại áo đó
+//             const top3Data = top3Types.map((type) => productTypes[type]);
+
+//             // Tạo dataSource cho biểu đồ tròn
+//             const dataSource = {
+//                 labels: top3Types,
+//                 datasets: [
+//                     {
+//                         data: top3Data,
+//                         backgroundColor: [
+//                             'rgba(255, 99, 132, 0.6)',
+//                             'rgba(54, 162, 235, 0.6)',
+//                             'rgba(255, 206, 86, 0.6)',
+//                         ],
+//                     },
+//                 ],
+//             };
+
+//             setDataPieChart(dataSource);
+//         });
+//     }, []);
+
+//     return <div>{dataPieChart && <Pie data={dataPieChart} />}</div>;
+// };
 
 export default Dashboard;
